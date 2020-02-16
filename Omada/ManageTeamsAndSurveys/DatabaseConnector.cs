@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,9 @@ namespace Omada.ManageTeamsAndSurveys
     {
         public static SqlConnection CreateConnection()
         {
-            var connection = new SqlConnection("Server=(localdb)\\mssqllocaldb;Database=Omada;Trusted_Connection=True;MultipleActiveResultSets=true");
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+            IConfigurationRoot configurationRoot = configurationBuilder.Build();
+            SqlConnection connection = new SqlConnection(configurationRoot.GetConnectionString("OmadaContextConnection"));
             connection.Open();
             return connection;
         }

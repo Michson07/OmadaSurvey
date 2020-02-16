@@ -1,0 +1,33 @@
+﻿@page
+@model Omada.Pages.Shared.SurveyModel
+@{
+    ViewData["Title"] = "Survey";
+}
+
+<div class="formPost">
+    <form method="post">
+        <div class="form-group">
+            <label asp-for="Survey.FirstAnswer">How do you rate the last week?</label><br/>
+            @*@for (int i = 1; i < 6; i++)
+            {
+                <span onclick="starmark(this)"
+                      id="@i" style="font-size:40px;cursor:pointer;" class="fa fa-star" asp-validation-for="Survey.FirstAnswer">
+                </span>
+            }*@
+            @for(int i = 1; i < 6; i++)
+            {
+                <input type="radio" value="@i" asp-for="Survey.FirstAnswer"/>@i<br/>
+            }
+        </div>
+        <div class="form-group">
+            <label asp-for="Survey.SecondAnswer">What was good?</label>
+            <input type="text" asp-for="Survey.SecondAnswer" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Survey.ThirdAnswer">What was bad?</label>
+            <input type="text" asp-for="Survey.ThirdAnswer" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-dark">Send!</button>
+        <a asp-area="" asp-page="/Index" class="btn btn-dark">Cancel</a>
+    </form>
+</div>

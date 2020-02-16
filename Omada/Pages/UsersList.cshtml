@@ -1,0 +1,39 @@
+﻿@page
+@model Omada.Pages.UsersListModel
+@{
+    ViewData["Title"] = "UsersList";
+}
+
+<table class="table table-light">
+    @foreach (var user in Model.Users)
+    {
+    <tr>
+        <td>@user.Email</td>
+        <td>
+            <a class="btn btn-dark"
+               asp-page="./ManageUser/DeleteUser" asp-route-userId="@user.Id">
+                Delete
+            </a>
+        </td>
+        @if (this.User.IsInRole("Admin"))
+        {
+            <td>
+                <a class="btn btn-dark"
+                   asp-page="./AddUserToTeamAsAdmin" asp-route-userId="@user.Id">
+                    Add User To Team
+                </a>
+            </td>
+        }
+        else if(this.User.IsInRole("Team Leader"))
+        {
+        <td>
+            <a class="btn btn-dark"
+               asp-page="./AddUserToTeamLeader" asp-route-userId="@user.Id" asp-route-teamId="@Model.Team.Id">
+                Add User To Your Team
+            </a>
+        </td>
+        }
+    </tr>
+    }
+</table>
+

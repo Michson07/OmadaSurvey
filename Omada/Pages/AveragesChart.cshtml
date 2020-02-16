@@ -1,0 +1,39 @@
+﻿@page
+@model Omada.Pages.AveragesChartModel
+@{
+    ViewData["Title"] = "AveragesGraph";
+}
+
+<div class="container">
+    <canvas id="chart">
+    </canvas>
+</div>
+
+@section Scripts
+{
+<script>
+    var weeks = @Html.Raw(Json.Serialize(
+                Model.AverageWeeks.Select(a => a.Week).ToArray()
+                ));
+    var averages = @Html.Raw(Json.Serialize(
+                    Model.AverageWeeks.Select(a => a.Average).ToArray()
+                    ));
+
+    var omadaChart = document.getElementById("chart").getContext("2d");
+
+    var massPopChart = new Chart(omadaChart, {
+    type: 'line',
+    data: {
+    labels: weeks,
+    datasets: [{
+        label: 'Average',
+        borderColor: 'green',
+        backgroundColor: 'white',
+        data: averages,
+        }],
+    },
+    
+    options: {}
+    });
+</script>
+}

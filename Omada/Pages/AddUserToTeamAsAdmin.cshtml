@@ -1,0 +1,26 @@
+﻿@page "{userId}"
+@model Omada.Pages.AddUserToTeamAsAdminModel
+@{
+    ViewData["Title"] = "AddUserToTeamAsAdmin";
+}
+
+    <form method="post">
+        <div class="form-group">
+            <label>Select Team</label>
+            <select class="form-control" asp-for="TeamId">
+                @foreach (var team in Model.Teams)
+                {
+                    <option value="@team.Id">@team.Name</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="TeamId"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="IsLeader">Is @Model.AddedUser.Email a leader of this team?</label><br>
+            <input type="radio" asp-for="IsLeader" value="1" />Yes<br>
+            <input type="radio" asp-for="IsLeader" value="0"/>No
+            <span class="text-danger" asp-validation-for="IsLeader"></span>
+        </div>
+        <button type="submit" class="btn btn-dark">Save</button>
+        <a asp-area="" asp-page="/UsersList" class="btn btn-dark">Cancel</a>
+    </form>

@@ -1,0 +1,17 @@
+﻿@page "{userId}"
+@model Omada.Pages.ManageUser.DeleteUserModel
+@{
+    ViewData["Title"] = "DeleteUser";
+}
+
+<h1>DeleteUser</h1>
+
+<div class="alert alert-danger">
+    Are you sure to delete @Model.DeletedUser.Email ?
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Yes!</button>
+    <a asp-page="../UsersList" class="btn btn-danger">Cancel</a>
+</form>
+

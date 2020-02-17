@@ -14,15 +14,22 @@ namespace Omada.Pages.Shared
     {
         private readonly SurveyData surveyData;
         private readonly UserManager<OmadaUser> userManager;
+        public bool IsUserAbleToStart { get; set; }
+        [BindProperty]
+        public OmadaSurvey Survey { get; set; }
         public SurveyModel(SurveyData surveyData, UserManager<OmadaUser> userManager)
         {
             this.surveyData = surveyData;
             this.userManager = userManager;
         }
-        [BindProperty]
-        public OmadaSurvey Survey{ get; set; }
         public IActionResult OnGet()
         {
+            IsUserAbleToStart = surveyData.CheckIfUserHaveDoneSurveyThisWeek(userManager.GetUserId(HttpContext.User));
+            if(!IsUserAbleToStart)
+            {
+                //return RedirectToPage("./NotFound");
+                return RedirectToPage("/Index");
+            }
             return Page();
         }        
         public IActionResult OnPost()

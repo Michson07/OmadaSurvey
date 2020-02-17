@@ -26,5 +26,29 @@ namespace Omada.ManageTeamsAndSurveys
                 }
             }
         }
+        public bool CheckIfUserHaveDoneSurveyThisWeek(string userId)
+        {
+            int count = 0;
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT COUNT(UserID)
+                                            FROM Surveys
+                                            WHERE UserId = @userId 
+                                            AND DATEPART(ww, SurveyDate) = DATEPART(ww, @utcNow)"; 
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@utcNow", DateTime.UtcNow);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            count = reader.GetInt32(0);
+                        }
+                    }
+                }
+            }
+            return count <= 0;
+        }
     }
 }

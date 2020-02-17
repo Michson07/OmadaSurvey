@@ -22,10 +22,12 @@ namespace Omada.Average
                                             WHERE USERID IN 
 	                                            (SELECT UserID 
 	                                            FROM Users_Teams
-	                                            WHERE TeamId = @TeamId)
+	                                            WHERE TeamId = @TeamId
+                                                AND YEAR(SurveyDate) = @SurveysYear)
                                             GROUP BY DATEPART(ww, SurveyDate)
                                             ORDER BY SURVEYS_WEEK;";
                     command.Parameters.AddWithValue("@TeamId", team.Id);
+                    command.Parameters.AddWithValue("@SurveysYear", DateTime.UtcNow.Year);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

@@ -4,7 +4,16 @@
     ViewData["Title"] = "StartSurvey";
 }
 
+<h1>Week: @Model.WeekNumber</h1>
+
 <div class="container">
-    <h1>Do you want to start servey?</h1>
-    <a class="btn btn-dark" asp-area="" asp-page="/Survey">Yes</a>
+    <h1>Do you want to start survey?</h1>
+    @if (!Model.IsUserAbleToStart)
+    {
+        <a class="btn btn-dark" id="disabledButton" asp-area="" asp-page="">You have already taken the survey this week</a>
+    }
+    else
+    {
+        <a class="btn btn-dark" asp-area="" asp-page="/Survey">Yes</a>
+    }
 </div>

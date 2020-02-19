@@ -12,5 +12,9 @@ namespace Omada.ManageTeamsAndSurveys
         OmadaTeam Add(OmadaTeam team);
         void Delete(int teamId);
         OmadaTeam GetTeamById(int teamId);
+        List<OmadaUser> GetTeamUsers(int teamId);
+        OmadaTeam Update(OmadaTeam team);
+        List<TeamUsers> UsersNotInTeam(int teamId);
+        void AddUserToTeam(string userId, int teamId);
     }
 }

@@ -25,7 +25,7 @@ namespace Omada.Average
 	                                            WHERE TeamId = @TeamId
                                                 AND YEAR(SurveyDate) = @SurveysYear)
                                             GROUP BY DATEPART(ww, SurveyDate)
-                                            ORDER BY SURVEYS_WEEK;";
+                                            ORDER BY SURVEYS_WEEK";
                     command.Parameters.AddWithValue("@TeamId", team.Id);
                     command.Parameters.AddWithValue("@SurveysYear", DateTime.UtcNow.Year);
                     using (SqlDataReader reader = command.ExecuteReader())

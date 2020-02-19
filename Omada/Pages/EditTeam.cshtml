@@ -1,0 +1,37 @@
+﻿@page "{teamId:int?}"
+@model Omada.Pages.EditTeamModel
+@{
+    ViewData["Title"] = "EditTeam";
+}
+
+<h1>@Model.Team.Name</h1>
+<form method="post" action="">
+    <input type="hidden" asp-for="Team.Id" />
+    <div class="form-group">
+        <label asp-for="Team.Name"></label>
+        <input asp-for="Team.Name" class="form-control" />
+        <span class="text-danger" asp-validation-for="Team.Name"></span>
+    </div>
+    <button type="button" class="btn btn-sm" onclick="buttonClicked()">Add New Team Members?</button>
+    <div id="users" class="form-group" style="display: none">
+        @for(int i = 0; i < Model.TeamUsersList.Count(); i++)
+        {
+        <div class="form-check">
+            <input type="checkbox" asp-for="@Model.TeamUsersList[i].IsSelected" />
+            <label asp-for="@Model.TeamUsersList[i].IsSelected">@Model.TeamUsersList[i].User.UserName</label>
+            <input type="hidden" asp-for="@Model.TeamUsersList[i].User.Id" />
+        </div>
+        }
+    </div>
+    <button type="submit" class="btn btn-dark" name="submitButton">Save</button>
+</form>
+
+@section Scripts
+{
+    <script>
+    function buttonClicked() {
+        var users = document.getElementById("users");
+        users.style.display = "block";
+        };
+    </script>
+}

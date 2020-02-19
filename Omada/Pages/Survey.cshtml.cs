@@ -38,6 +38,14 @@ namespace Omada.Pages.Shared
             {
                 return Page();
             }
+            if (Survey.SecondAnswer == null)
+            {
+                Survey.SecondAnswer = "";
+            }
+            if(Survey.ThirdAnswer == null)
+            {
+                Survey.ThirdAnswer = "";
+            }
             Survey.UserId = userManager.GetUserId(HttpContext.User);
             Survey.Date = DateTime.UtcNow;
             surveyData.AddSurvey(Survey);

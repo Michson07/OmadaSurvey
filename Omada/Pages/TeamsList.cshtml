@@ -1,0 +1,55 @@
+﻿@page
+@model Omada.Pages.TeamsListModel
+@{
+    ViewData["Title"] = "Teams";
+}
+
+<h1>Teams</h1>
+<a class="btn btn-dark" asp-area="" asp-page="./EditTeam">Add New Team</a>
+<table class="table table-light">
+@foreach (var teamUsers in Model.Teams_Users.Keys)
+{
+    <tr>
+        <td>
+            <button class="btn btn-light" id="@teamUsers.Id" onclick="teamClick(this)">@teamUsers.Name</button>
+            <div class="users" id="@teamUsers.Id users" style="display: none">
+                <table class="table table-light">
+                    @foreach (var user in Model.Teams_Users.Where(t => t.Key == teamUsers).SelectMany(t => t.Value).ToList())
+                    {
+                        <tr>
+                            <td>@user.Email</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </td>
+        <td>
+            <a class="btn btn-dark"
+               asp-page="./EditTeam" asp-route-teamId="@teamUsers.Id">
+                Edit Team
+            </a>         
+            <a class="btn btn-dark"
+               asp-page="./DeleteTeam" asp-route-teamId="@teamUsers.Id">
+                Delete Team
+            </a>
+        </td>
+    </tr>
+}
+</table>
+
+@section Scripts
+{
+<script>
+    function teamClick(button) {
+      var number = button.id;
+      var users = document.getElementById((number) + " users");
+      if (users.style.display === "none") {
+        users.style.display = "block";
+      }
+      else {
+        users.style.display = "none";
+      }
+    };
+</script>
+}
+

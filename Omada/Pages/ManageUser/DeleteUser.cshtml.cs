@@ -19,7 +19,7 @@ namespace Omada.Pages.ManageUser
         }
         public IActionResult OnGet(string userId)
         {
-            OmadaUser DeletedUser = userData.GetUserById(userId);
+            DeletedUser = userData.GetUserById(userId);
             if(DeletedUser == null)
             {
                 //return RedirectToPage("./NotFound");
@@ -29,7 +29,7 @@ namespace Omada.Pages.ManageUser
         }
         public IActionResult OnPost(string userId)
         {
-            OmadaUser DeletedUser = userData.Delete(userId);
+            DeletedUser = userData.Delete(userId);
             userData.Commit();
             if(DeletedUser == null)
             {

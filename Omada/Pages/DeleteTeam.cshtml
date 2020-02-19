@@ -1,0 +1,15 @@
+﻿@page "{teamId}"
+@model Omada.Pages.DeleteTeamModel
+@{
+    ViewData["Title"] = "DeleteTeam";
+}
+
+<h1>DeleteTeam</h1>
+<div class="alert alert-danger">
+    Are you sure to delete @Model.Team.Name ?
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Yes!</button>
+    <a asp-page="./TeamsList" class="btn btn-danger">Cancel</a>
+</form>

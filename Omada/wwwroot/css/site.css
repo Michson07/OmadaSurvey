@@ -72,5 +72,5 @@ body {
 
 #disabledButton {
     pointer-events: none;
-    cursor: default;
+    text-decoration: none;
 }

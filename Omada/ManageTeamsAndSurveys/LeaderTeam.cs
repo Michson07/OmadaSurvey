@@ -11,9 +11,9 @@ namespace Omada.ManageTeamsAndSurveys
 {
     public class LeaderTeam
     {
-        public OmadaTeam GetTeam(string leaderId)
+        public List<OmadaTeam> GetTeams(string leaderId)
         {
-            OmadaTeam team = new OmadaTeam();
+            List<OmadaTeam> teams = new List<OmadaTeam>();
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
             {
                 using(SqlCommand command = connection.CreateCommand())
@@ -29,13 +29,15 @@ namespace Omada.ManageTeamsAndSurveys
                     {
                         while(reader.Read())
                         {
+                            OmadaTeam team = new OmadaTeam();
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
+                            teams.Add(team);
                         }
                     }
                 }
             }
-            return team;
+            return teams;
         }
     }
 }

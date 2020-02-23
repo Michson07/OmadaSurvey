@@ -20,6 +20,7 @@ namespace Omada.Areas.Identity
                     options.UseSqlServer(
                         context.Configuration.GetConnectionString("OmadaContextConnection")));
 
+
                 services.AddDefaultIdentity<OmadaUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<OmadaContext>();

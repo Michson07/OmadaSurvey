@@ -191,5 +191,60 @@ namespace Omada.ManageTeamsAndSurveys
                 }
             }
         }
+        public List<OmadaTeam> GetLeaderTeams(string leaderId)
+        {
+            List<OmadaTeam> teams = new List<OmadaTeam>();
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name
+                                            FROM dbo.Users_Teams
+                                            JOIN dbo.Teams 
+                                            ON dbo.Users_Teams.TeamId = dbo.Teams.Id
+                                            AND dbo.Users_Teams.UserId = @leaderId
+                                            AND dbo.Users_Teams.IsLeader = 1";
+                    command.Parameters.AddWithValue("@leaderId", leaderId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            OmadaTeam team = new OmadaTeam();
+                            team.Id = reader.GetInt32(0);
+                            team.Name = reader.GetString(1);
+                            teams.Add(team);
+                        }
+                    }
+                }
+            }
+            return teams;
+        }
+        public List<OmadaTeam> GetUserTeams(string userId)
+        {
+            List<OmadaTeam> teams = new List<OmadaTeam>();
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name
+                                            FROM dbo.Users_Teams
+                                            JOIN dbo.Teams 
+                                            ON dbo.Users_Teams.TeamId = dbo.Teams.Id
+                                            AND dbo.Users_Teams.UserId = @userId";
+                    command.Parameters.AddWithValue("@userId", userId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            OmadaTeam team = new OmadaTeam();
+                            team.Id = reader.GetInt32(0);
+                            team.Name = reader.GetString(1);
+                            teams.Add(team);
+                        }
+                    }
+                }
+            }
+            return teams;
+        }
     }
 }

@@ -16,5 +16,8 @@ namespace Omada.ManageTeamsAndSurveys
         OmadaTeam Update(OmadaTeam team);
         List<TeamUsers> UsersNotInTeam(int teamId);
         void AddUserToTeam(string userId, int teamId);
+        List<OmadaTeam> GetLeaderTeams(string leaderId);
+        List<OmadaTeam> GetUserTeams(string userId);
     }
+
 }

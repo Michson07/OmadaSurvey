@@ -18,7 +18,7 @@ namespace Omada.Pages
         private readonly UserManager<OmadaUser> userManager;
 
         public IEnumerable<OmadaUser> Users { get; set; }
-        public OmadaTeam Team { get; set; }
+        public List<OmadaTeam> Teams { get; set; }
 
         public UsersListModel(UserManager<OmadaUser> userManager)
         {
@@ -28,7 +28,7 @@ namespace Omada.Pages
         {
             Users = userManager.Users;
             LeaderTeam team = new LeaderTeam();
-            Team = team.GetTeam(userManager.GetUserId(HttpContext.User));
+            Teams = team.GetTeams(userManager.GetUserId(HttpContext.User));
         }
     }
 }

@@ -27,8 +27,7 @@ namespace Omada.Pages.Shared
             IsUserAbleToStart = surveyData.CheckIfUserHaveDoneSurveyThisWeek(userManager.GetUserId(HttpContext.User));
             if(!IsUserAbleToStart)
             {
-                //return RedirectToPage("./NotFound");
-                return RedirectToPage("/Index");
+                return RedirectToPage("./SurveyCompleted");
             }
             return Page();
         }        

@@ -24,15 +24,15 @@
                 </a>
             </td>
         }
-        else if(this.User.IsInRole("Team Leader"))
+        @*else if(this.User.IsInRole("Team Leader"))
         {
         <td>
             <a class="btn btn-dark"
-               asp-page="./AddUserToTeamLeader" asp-route-userId="@user.Id" asp-route-teamId="@Model.Team.Id">
+               asp-page="./AddUserToTeamLeader" asp-route-userId="@user.Id" asp-route-teamId="@Model.Teams">
                 Add User To Your Team
             </a>
         </td>
-        }
+        }*@
     </tr>
     }
 </table>

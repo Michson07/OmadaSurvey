@@ -11,8 +11,8 @@ using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Pages
 {
-    [Authorize(Roles="Admin")]
     [BindProperties]
+    [Authorize]
     public class EditTeamModel : PageModel
     {
         private readonly ITeamData teamData;

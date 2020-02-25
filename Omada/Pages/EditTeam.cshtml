@@ -12,6 +12,12 @@
         <input asp-for="Team.Name" class="form-control" />
         <span class="text-danger" asp-validation-for="Team.Name"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Team.IsPublic"></label>
+        <input type="radio" asp-for="Team.IsPublic" value="true"/>Yes
+        <input type="radio" asp-for="Team.IsPublic" value="false"/>No
+        <span class="text-danger" asp-validation-for="Team.IsPublic"></span>
+    </div>
     <button type="button" class="btn btn-sm" onclick="buttonClicked()">Add New Team Members?</button>
     <div id="users" class="form-group" style="display: none">
         @for(int i = 0; i < Model.TeamUsersList.Count(); i++)

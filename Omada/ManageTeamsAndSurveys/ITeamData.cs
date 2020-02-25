@@ -18,6 +18,8 @@ namespace Omada.ManageTeamsAndSurveys
         void AddUserToTeam(string userId, int teamId);
         List<OmadaTeam> GetLeaderTeams(string leaderId);
         List<OmadaTeam> GetUserTeams(string userId);
+        List<OmadaUser> GetTeamLeaders(OmadaTeam team);
+        List<OmadaTeam> GetTeamsWhereUserNotMember(string userId);
     }
 
 }

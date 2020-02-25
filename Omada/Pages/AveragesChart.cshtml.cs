@@ -20,7 +20,7 @@ namespace Omada.Pages
         private readonly UserManager<OmadaUser> userManager;
         private readonly TeamData teamData;
 
-        public List<OmadaTeam> Teams { get; set; }
+        public IEnumerable<OmadaTeam> Teams { get; set; }
         public Dictionary<string, List<OmadaSurveysAverage>> AverageWeeks = new Dictionary<string, List<OmadaSurveysAverage>>();
         public AveragesChartModel(AveragesCalculate averagesCalculate, UserManager<OmadaUser> userManager, TeamData teamData)
         {
@@ -30,8 +30,16 @@ namespace Omada.Pages
         }
         public void OnGet()
         {
-            string leaderId = userManager.GetUserId(HttpContext.User);
-            Teams = teamData.GetLeaderTeams(leaderId);
+            if(User.IsInRole("Admin"))
+            {
+                Teams = teamData.GetAllTeams().Where(t => t.IsPublic == true);
+            }
+            else if(User.IsInRole("Team Leader"))
+            {
+                string leaderId = userManager.GetUserId(HttpContext.User);
+                Teams = teamData.GetLeaderTeams(leaderId);
+            }
+
             foreach(var team in Teams)
             {
                 var averages = averagesCalculate.GetSurveysAverages(team);

@@ -15,15 +15,12 @@
                 Delete
             </a>
         </td>
-        @if (this.User.IsInRole("Admin"))
-        {
-            <td>
-                <a class="btn btn-dark"
-                   asp-page="./AddUserToTeamAsAdmin" asp-route-userId="@user.Id">
-                    Add User To Team
-                </a>
-            </td>
-        }
+        <td>
+            <a class="btn btn-dark"
+                asp-page="./AddUserToTeamAsAdmin" asp-route-userId="@user.Id">
+                Add User To Team
+            </a>
+        </td>
         @*else if(this.User.IsInRole("Team Leader"))
         {
         <td>

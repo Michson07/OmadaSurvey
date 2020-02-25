@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +12,7 @@ using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Pages.Shared
 {
+    [Authorize]
     public class StartSurveyModel : PageModel
     {
         private readonly SurveyData surveyData;

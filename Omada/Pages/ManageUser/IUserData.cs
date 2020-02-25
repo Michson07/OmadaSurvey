@@ -12,6 +12,8 @@ namespace Omada.Pages.ManageUser
         OmadaUser Add(OmadaUser newUser);
         OmadaUser Delete(string id);
         OmadaUser GetUserById(string id);
+        public string GetUserEmail(OmadaUser user);
         int Commit();
+
     }
 }

@@ -25,6 +25,7 @@ namespace Omada.ManageTeamsAndSurveys
                             OmadaTeam team = new OmadaTeam();
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
+                            team.IsPublic = reader.GetBoolean(2);
                             teams.Add(team);
                         }
                     }
@@ -40,8 +41,9 @@ namespace Omada.ManageTeamsAndSurveys
                 using (command = connection.CreateCommand())
                 {
                     command.CommandText = @"INSERT INTO dbo.Teams 
-                                            VALUES(@Name)";
+                                            VALUES(@Name, @IsPublic)";
                     command.Parameters.AddWithValue("@Name", team.Name);
+                    command.Parameters.AddWithValue("@IsPublic", team.IsPublic);
                     command.ExecuteNonQuery();
                 }
                 using(command = connection.CreateCommand())
@@ -94,6 +96,7 @@ namespace Omada.ManageTeamsAndSurveys
                         {
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
+                            team.IsPublic = reader.GetBoolean(2);
                         }
                     }
                 }
@@ -136,10 +139,12 @@ namespace Omada.ManageTeamsAndSurveys
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = @"UPDATE dbo.Teams 
-                                            SET Name = @Name
+                                            SET Name = @Name, IsPublic = @IsPublic
                                             WHERE Id = @Id";
                     command.Parameters.AddWithValue("@Id", team.Id);
                     command.Parameters.AddWithValue("@Name", team.Name);
+                    command.Parameters.AddWithValue("@IsPublic", team.IsPublic);
+
                     command.ExecuteNonQuery();
                 }
             }
@@ -198,7 +203,7 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
                                             FROM dbo.Users_Teams
                                             JOIN dbo.Teams 
                                             ON dbo.Users_Teams.TeamId = dbo.Teams.Id
@@ -212,6 +217,7 @@ namespace Omada.ManageTeamsAndSurveys
                             OmadaTeam team = new OmadaTeam();
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
+                            team.IsPublic = reader.GetBoolean(2);
                             teams.Add(team);
                         }
                     }
@@ -226,7 +232,7 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
                                             FROM dbo.Users_Teams
                                             JOIN dbo.Teams 
                                             ON dbo.Users_Teams.TeamId = dbo.Teams.Id
@@ -239,12 +245,73 @@ namespace Omada.ManageTeamsAndSurveys
                             OmadaTeam team = new OmadaTeam();
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
+                            team.IsPublic = reader.GetBoolean(2);
                             teams.Add(team);
                         }
                     }
                 }
             }
             return teams;
+        }
+        List<OmadaTeam> ITeamData.GetTeamsWhereUserNotMember(string userId)
+        {
+            List<OmadaTeam> teams = new List<OmadaTeam>();
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT DISTINCT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
+                                            FROM dbo.Users_Teams
+                                            JOIN dbo.Teams 
+                                            ON dbo.Users_Teams.TeamId = dbo.Teams.Id
+                                            AND dbo.Users_Teams.TeamId NOT IN 
+                                                (SELECT TeamId 
+                                                FROM dbo.Users_Teams
+                                                WHERE UserId = @userId)";
+                    command.Parameters.AddWithValue("@userId", userId);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            OmadaTeam team = new OmadaTeam();
+                            team.Id = reader.GetInt32(0);
+                            team.Name = reader.GetString(1);
+                            team.IsPublic = reader.GetBoolean(2);
+                            teams.Add(team);
+                        }
+                    }
+                }
+            }
+            return teams;
+        }
+        public List<OmadaUser> GetTeamLeaders(OmadaTeam team)
+        {
+            List<OmadaUser> teamUsers = new List<OmadaUser>();
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT dbo.AspNetUsers.Id, dbo.AspNetUsers.UserName, dbo.AspNetUsers.Email
+                                            FROM dbo.Users_Teams
+                                            JOIN DBO.AspNetUsers
+                                            ON Dbo.AspNetUsers.Id = dbo.Users_Teams.UserId
+                                            AND dbo.Users_Teams.TeamId = @teamId
+                                            AND dbo.Users_Teams.IsLeader = 1";
+                    command.Parameters.AddWithValue("@teamId", team.Id);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            OmadaUser user = new OmadaUser();
+                            user.Id = reader.GetString(0);
+                            user.UserName = reader.GetString(1);
+                            user.Email = reader.GetString(2);
+                            teamUsers.Add(user);
+                        }
+                    }
+                }
+            }
+            return teamUsers;
         }
     }
 }

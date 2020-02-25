@@ -42,6 +42,10 @@ namespace Omada.Pages.ManageUser
         {
             return db.Users.Find(id);
         }
+        public string GetUserEmail(OmadaUser user)
+        {
+            return db.Users.Find(user).Email;
+        }
         public int Commit()
         {
             return db.SaveChanges();

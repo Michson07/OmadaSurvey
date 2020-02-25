@@ -24,13 +24,23 @@
     for (var i = 1; i <= today.getWeekNumber(); i++) {
         weeks.push(i);
     }
+    var colorIncreaser = 5;
+    //var colors = function() {
+    //    var r = 'green';
+    //    var g = colorIncreaser + 110;
+    //    var b = colorIncreaser + 45;
+    //    colorIncreaser += 120;
+    //    return "rgb(" + r + "," + g + "," + b + ")";
+    //};
 
-    var colors = function() {
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            return "rgb(" + r + "," + g + "," + b + ")";
-    };
+    function colors() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
 
     var omadaChart = document.getElementById("chart").getContext("2d");
     var myDatasets = [];

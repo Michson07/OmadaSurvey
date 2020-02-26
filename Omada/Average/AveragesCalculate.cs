@@ -3,6 +3,7 @@ using Omada.Areas.Identity.Data;
 using Omada.ManageTeamsAndSurveys;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,6 +41,47 @@ namespace Omada.Average
                     }
                 }
                 return averageWeeks;
+            }
+        }
+        public static int GetCurrentWeek()
+        {
+            CultureInfo culture = new CultureInfo("en-US");
+            Calendar calendar = culture.Calendar;
+            CalendarWeekRule calendarWeekRule = culture.DateTimeFormat.CalendarWeekRule;
+            DayOfWeek dayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
+            return calendar.GetWeekOfYear(DateTime.UtcNow, calendarWeekRule, dayOfWeek);
+        }
+
+        public List<OmadaSurvey> GetOpinionsFromCurrentWeek(OmadaTeam team, int week)
+        {
+            List<OmadaSurvey> opinions = new List<OmadaSurvey>();
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"SELECT SecondAnswer, ThirdAnswer
+                                                FROM Surveys 
+                                                WHERE UserId IN 
+                                                (SELECT UserID 
+                                                FROM Users_Teams
+                                                WHERE TeamId = @TeamId
+                                                AND YEAR(SurveyDate) = 2020)
+                                                AND DATEPART(ww, SurveyDate) = @Week";
+                    command.Parameters.AddWithValue("@TeamId", team.Id);
+                    command.Parameters.AddWithValue("@SurveysYear", DateTime.UtcNow.Year);
+                    command.Parameters.AddWithValue("@Week", week);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            OmadaSurvey opinion = new OmadaSurvey();
+                            opinion.SecondAnswer = reader.GetString(0);
+                            opinion.ThirdAnswer = reader.GetString(1);
+                            opinions.Add(opinion);
+                        }
+                    }
+                }
+                return opinions;
             }
         }
     }

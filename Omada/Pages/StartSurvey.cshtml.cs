@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Omada.Areas.Identity.Data;
+using Omada.Average;
 using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Pages.Shared
@@ -27,11 +28,7 @@ namespace Omada.Pages.Shared
         }
         public void OnGet()
         {
-            CultureInfo culture = new CultureInfo("en-US");
-            Calendar calendar = culture.Calendar;
-            CalendarWeekRule calendarWeekRule = culture.DateTimeFormat.CalendarWeekRule;
-            DayOfWeek dayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
-            WeekNumber = calendar.GetWeekOfYear(DateTime.UtcNow, calendarWeekRule, dayOfWeek);
+            WeekNumber = AveragesCalculate.GetCurrentWeek();
             IsUserAbleToStart = surveyData.CheckIfUserHaveDoneSurveyThisWeek(userManager.GetUserId(HttpContext.User));
         }
     }

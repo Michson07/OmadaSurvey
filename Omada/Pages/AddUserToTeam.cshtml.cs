@@ -61,8 +61,7 @@ namespace Omada.Pages
             {
                 return Page();
             }
-            AddUserToTeam addUserToTeam = new AddUserToTeam();
-            addUserToTeam.AddUser(userId, TeamId, IsLeader);
+            teamData.AddUserToTeam(userId, TeamId, IsLeader);
             return RedirectToPage("./UsersList");
         }
     }

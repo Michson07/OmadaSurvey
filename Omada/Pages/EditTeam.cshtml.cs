@@ -67,11 +67,12 @@ namespace Omada.Pages
             else
             {
                 team = teamData.Add(Team);
+                teamData.AddUserToTeam(userManager.GetUserId(User), team.Id, 1);
             }
             var selectedUsers = TeamUsersList.Where(t => t.IsSelected == true).Select(t => t.User.Id).ToList();
             foreach (var user in selectedUsers)
             {
-                teamData.AddUserToTeam(user, team.Id);
+                teamData.AddUserToTeam(user, team.Id, 0);
             }
 
             return RedirectToPage("./TeamsList");

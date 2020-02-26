@@ -182,7 +182,7 @@ namespace Omada.ManageTeamsAndSurveys
             }
             return teamUsersList;
         }
-        public void AddUserToTeam(string userId, int teamId)
+        public void AddUserToTeam(string userId, int teamId, int isLeader)
         {
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
             {
@@ -191,7 +191,7 @@ namespace Omada.ManageTeamsAndSurveys
                     command.CommandText = @"INSERT INTO dbo.Users_Teams VALUES(@UserId, @TeamId, @IsLeader)";
                     command.Parameters.AddWithValue("@UserId", userId);
                     command.Parameters.AddWithValue("@TeamId", teamId);
-                    command.Parameters.AddWithValue("@IsLeader", "false");
+                    command.Parameters.AddWithValue("@IsLeader", isLeader);
                     command.ExecuteNonQuery();
                 }
             }

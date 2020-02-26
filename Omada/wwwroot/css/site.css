@@ -74,3 +74,8 @@ body {
     pointer-events: none;
     text-decoration: none;
 }
+
+table 
+{
+    text-align: center;
+}

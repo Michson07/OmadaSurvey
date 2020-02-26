@@ -15,12 +15,12 @@ using Omada.Pages.ManageUser;
 namespace Omada.Pages
 {
     [Authorize]
+    [BindProperties]
     public class TeamsListModel : PageModel
     {
-        private readonly ITeamData teamData;
+        public ITeamData teamData;
         private readonly UserManager<OmadaUser> userManager;
         private readonly IUserData userData;
-        [BindProperty]
         public OmadaTeam Team { get; set; }
         public bool IsUserAbleToEdit { get; set; }
         public Dictionary<OmadaTeam, List<OmadaUser>> Teams_Users = new Dictionary<OmadaTeam, List<OmadaUser>>();
@@ -30,6 +30,14 @@ namespace Omada.Pages
             this.teamData = teamData;
             this.userManager = userManager;
             this.userData = userData;
+        }
+        public bool CheckIfUserInTeam(int teamId)
+        {
+            return teamData.GetUserTeams(userManager.GetUserId(HttpContext.User)).Where(t => t.Id == teamId).Any();
+        }
+        public bool CheckIfUserIsLeader(int teamId)
+        {
+            return teamData.GetLeaderTeams(userManager.GetUserId(HttpContext.User)).Where(t => t.Id == teamId).Any();
         }
         public void OnGet()
         {
@@ -52,7 +60,7 @@ namespace Omada.Pages
             }
             
         }
-        public void OnPostSendEmailToLeader(int teamId)
+        public bool SendEmailToLeader(int teamId)
         {
             Team = teamData.GetTeamById(teamId);
             List<OmadaUser> leaders = teamData.GetTeamLeaders(Team);
@@ -64,18 +72,19 @@ namespace Omada.Pages
                 OmadaUser user = userManager.FindByIdAsync(userId).Result;
                 using (MailMessage mail = new MailMessage())
                 {
-                    mail.From = new MailAddress("Omada@omada.com");
+                    mail.From = new MailAddress("email@gmail.com");
                     mail.To.Add(email);
                     mail.Subject = "Request to be added to team ";
                     mail.Body = $"{user.UserName} wants to join your team {Team.Name}";
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                     {
-                        smtp.Credentials = new NetworkCredential("Omada@omada.com", "password"); //change this to send
+                        smtp.Credentials = new NetworkCredential("email@gmail.com", "password"); //change this to send
                         smtp.EnableSsl = true;
                         smtp.Send(mail);
                     }
                 }
             }
+            return false;
         }
     }
 }

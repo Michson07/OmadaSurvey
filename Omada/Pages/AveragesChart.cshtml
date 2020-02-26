@@ -5,9 +5,41 @@
 }
 
 <div class="container">
-    <canvas id="chart">
-    </canvas>
+    <div>
+        <canvas id="chart">
+        </canvas>
+    </div>
+    <table class="table table-light">
+        @foreach (var teams in Model.TeamsOpinions.Keys)
+        {
+            <tr>
+                <td>
+                    <button class="btn btn-light" id="@teams" onclick="teamClick(this)">@teams</button>
+                    <div class="opinions" id="@teams opinions" style="display: none">
+                        <table class="table table-light">
+                            <tr>
+                                <th>Good Things</th>
+                                <th>Bad Things</th>
+                            </tr>
+                            @foreach (var opinion in Model.TeamsOpinions.Where(t => t.Key == teams).SelectMany(t => t.Value).ToList())
+                            {
+                                <tr>
+                                    <td>
+                                        @opinion.SecondAnswer
+                                    </td>
+                                    <td>
+                                        @opinion.ThirdAnswer
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        }
+        </table>
 </div>
+
 
 @section Scripts
 {
@@ -18,20 +50,13 @@
         d.setUTCDate(d.getUTCDate() + 4 - dayNum);
         var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
         return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-    };        
+    }; 
+    
     var today = new Date();
     var weeks = [];
     for (var i = 1; i <= today.getWeekNumber(); i++) {
         weeks.push(i);
     }
-    var colorIncreaser = 5;
-    //var colors = function() {
-    //    var r = 'green';
-    //    var g = colorIncreaser + 110;
-    //    var b = colorIncreaser + 45;
-    //    colorIncreaser += 120;
-    //    return "rgb(" + r + "," + g + "," + b + ")";
-    //};
 
     function colors() {
     var letters = '0123456789ABCDEF'.split('');
@@ -72,5 +97,16 @@
         },
         options: {}
     });
+
+    function teamClick(button) {
+      var name = button.id;
+      var users = document.getElementById((name) + " opinions");
+      if (users.style.display === "none") {
+        users.style.display = "block";
+      }
+      else {
+        users.style.display = "none";
+      }
+    };
 </script>
 }

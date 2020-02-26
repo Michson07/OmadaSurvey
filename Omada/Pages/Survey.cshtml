@@ -6,26 +6,24 @@
 
 <div class="formPost">
     <form method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="Survey.FirstAnswer">How do you rate the last week?</label><br/>
-            @*@for (int i = 1; i < 6; i++)
+            <label asp-for="@Model.Survey.FirstAnswer">How do you rate the last week?</label><br />
+            @for (int i = 1; i < 6; i++)
             {
-                <span onclick="starmark(this)"
-                      id="@i" style="font-size:40px;cursor:pointer;" class="fa fa-star" asp-validation-for="Survey.FirstAnswer">
-                </span>
-            }*@
-            @for(int i = 1; i < 6; i++)
-            {
-                <input type="radio" value="@i" asp-for="Survey.FirstAnswer"/>@i<br/>
+                <input type="radio" value="@i" asp-for="@Model.Survey.FirstAnswer" />@i<br />
             }
+            <span asp-validation-for="@Model.Survey.FirstAnswer" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Survey.SecondAnswer">What was good?</label>
-            <input type="text" asp-for="Survey.SecondAnswer" class="form-control" />
+            <label asp-for="@Model.Survey.SecondAnswer">What was good?</label>
+            <input type="text" asp-for="@Model.Survey.SecondAnswer" class="form-control" />
+            <span asp-validation-for="@Model.Survey.SecondAnswer" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Survey.ThirdAnswer">What was bad?</label>
-            <input type="text" asp-for="Survey.ThirdAnswer" class="form-control" />
+            <label asp-for="@Model.Survey.ThirdAnswer">What was bad?</label>
+            <input type="text" asp-for="@Model.Survey.ThirdAnswer" class="form-control" />
+            <span asp-validation-for="@Model.Survey.ThirdAnswer" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-dark">Send!</button>
         <a asp-area="" asp-page="/Index" class="btn btn-dark">Cancel</a>

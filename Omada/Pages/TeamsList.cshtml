@@ -37,16 +37,30 @@
             }
             else
             {
-            <form method="post" asp-page-handler="SendEmailToLeader">
-
-                <input type="hidden" class="btn btn-dark" name="teamId" value="@teamUsers.Id" />
-                <input type="submit" class="btn btn-dark" name="teamId" value="Send Email With Request To Join" />
-            </form>    
-                @*<form method="post">
-
-                <input type="hidden" class="btn btn-dark" name="teamId" id="team"value="@teamUsers.Id" />
-                <input type="submit" class="btn btn-dark" name="teamId" value="Send Email With Request To Join" />
-            </form>*@
+                @if (!Model.CheckIfUserInTeam(teamUsers.Id))
+                {
+                    <form method="post">
+                        <button type="button" class="btn btn-dark" ondblclick="@Model.SendEmailToLeader(teamUsers.Id)">Send Email With Request To Join</button>
+                    </form>
+                }
+                else
+                {
+                    if (Model.CheckIfUserIsLeader(teamUsers.Id))
+                    {
+                        <a class="btn btn-dark"
+                           asp-page="./EditTeam" asp-route-teamId="@teamUsers.Id">
+                            Edit Team
+                        </a>
+                        <a class="btn btn-dark"
+                           asp-page="./DeleteTeam" asp-route-teamId="@teamUsers.Id">
+                            Delete Team
+                        </a>
+                    }
+                    else
+                    {
+                        <p>You are a member of this team</p>
+                    }
+                }
             }
         </td>
     </tr>
@@ -66,20 +80,6 @@
         users.style.display = "none";
       }
     };
-
-   //var teamId = document.getElementById("team").innerHTML;
-   //$.ajax({
-   //url: '/TeamsList',
-   //type = 'POST',
-   //contentType = 'application/json; charset=utf-8',
-   //headers = {
-   //   RequestVerificationToken: 
-   //       $('input:hidden[name="__RequestVerificationToken"]').val()
-   //},
-   //data: JSON.stringify(teamId)
-   // })
-   // .done(function(result) {
-
 </script>
 }
 

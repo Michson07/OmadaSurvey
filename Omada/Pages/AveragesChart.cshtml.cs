@@ -22,6 +22,8 @@ namespace Omada.Pages
 
         public IEnumerable<OmadaTeam> Teams { get; set; }
         public Dictionary<string, List<OmadaSurveysAverage>> AverageWeeks = new Dictionary<string, List<OmadaSurveysAverage>>();
+        public Dictionary<string, List<OmadaSurvey>> TeamsOpinions = new Dictionary<string, List<OmadaSurvey>>();
+
         public AveragesChartModel(AveragesCalculate averagesCalculate, UserManager<OmadaUser> userManager, TeamData teamData)
         {
             this.averagesCalculate = averagesCalculate;
@@ -43,7 +45,9 @@ namespace Omada.Pages
             foreach(var team in Teams)
             {
                 var averages = averagesCalculate.GetSurveysAverages(team);
+                var opinions = averagesCalculate.GetOpinionsFromCurrentWeek(team, AveragesCalculate.GetCurrentWeek());
                 AverageWeeks.Add(team.Name, averages);
+                TeamsOpinions.Add(team.Name, opinions);
             }
         }
     }

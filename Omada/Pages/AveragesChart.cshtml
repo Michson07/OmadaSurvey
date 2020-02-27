@@ -58,14 +58,12 @@
         weeks.push(i);
     }
 
-    function colors() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-}
+    var colors = function() {
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+        return "rgb(" + r + "," + g + "," + b + ")";
+        };
 
     var omadaChart = document.getElementById("chart").getContext("2d");
     var myDatasets = [];
@@ -79,9 +77,10 @@
                     y: v.average
                 };
             });
+            var color = colors();
             var current = {
                 fill: false,
-                borderColor: colors,
+                borderColor: color,
                 label: key,
                 data: averages
             };

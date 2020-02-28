@@ -24,13 +24,14 @@ namespace Omada.Pages
             this.teamData = teamData;
             this.userManager = userManager;
         }
-        public IActionResult OnGet(int? teamId)
+
+        private void setUsers(int? teamId)
         {
-            if(!teamId.HasValue)
+            if (!teamId.HasValue)
             {
                 Team = new OmadaTeam();
                 TeamUsersList = new List<TeamUsers>();
-                foreach(var user in userManager.Users)
+                foreach (var user in userManager.Users.Where(u => u.Id != userManager.GetUserId(User)))
                 {
                     TeamUsersList.Add(new TeamUsers()
                     {
@@ -44,18 +45,24 @@ namespace Omada.Pages
                 Team = teamData.GetTeamById(teamId.Value);
                 TeamUsersList = teamData.UsersNotInTeam(teamId.Value);
             }
-            if(Team == null)
+        }
+
+        public IActionResult OnGet(int? teamId)
+        {
+            setUsers(teamId);
+            if (Team == null)
             {
                 return RedirectToPage("./Index");
                 //return RedirectToPage("./NotFound");
             }
-            
+
             return Page();
         }
         public IActionResult OnPost ()
         {
             if (!ModelState.IsValid)
             {
+                setUsers(null);
                 return Page();  
             }
 

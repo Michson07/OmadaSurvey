@@ -40,7 +40,7 @@
                 @if (!Model.CheckIfUserInTeam(teamUsers.Id))
                 {
                     <form method="post">
-                        <button type="button" class="btn btn-dark" ondblclick="@Model.SendEmailToLeader(teamUsers.Id)">Send Email With Request To Join</button>
+                        <button type="button" class="btn btn-dark" onclick="sendEmail(@teamUsers.Id)">Send Email With Request To Join</button>
                     </form>
                 }
                 else
@@ -70,15 +70,31 @@
 @section Scripts
 {
 <script>
+    function sendEmail(teamId) {
+        var team = teamId;
+        console.log(JSON.stringify(team));
+        $.ajax({
+            url: "/TeamsList",
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            headers:
+            {
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            data: JSON.stringify(team)
+        }).done(function (result) {
+        });
+    };
+
     function teamClick(button) {
-      var number = button.id;
-      var users = document.getElementById((number) + " users");
-      if (users.style.display === "none") {
-        users.style.display = "block";
-      }
-      else {
-        users.style.display = "none";
-      }
+        var number = button.id;
+        var users = document.getElementById((number) + " users");
+        if (users.style.display === "none") {
+            users.style.display = "block";
+        }
+        else {
+            users.style.display = "none";
+        }
     };
 </script>
 }

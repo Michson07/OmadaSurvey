@@ -60,7 +60,7 @@ namespace Omada.Pages
             }
             
         }
-        public bool SendEmailToLeader(int teamId)
+        public void OnPost([FromBody]int teamId)
         {
             Team = teamData.GetTeamById(teamId);
             List<OmadaUser> leaders = teamData.GetTeamLeaders(Team);
@@ -78,13 +78,12 @@ namespace Omada.Pages
                     mail.Body = $"{user.UserName} wants to join your team {Team.Name}";
                     using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
                     {
-                        smtp.Credentials = new NetworkCredential("email@gmail.com", "password"); //change this to send
+                        smtp.Credentials = new NetworkCredential("mail@gmail.com", "password"); //change this to send
                         smtp.EnableSsl = true;
                         smtp.Send(mail);
                     }
                 }
             }
-            return false;
         }
     }
 }

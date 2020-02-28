@@ -150,9 +150,9 @@ namespace Omada.ManageTeamsAndSurveys
             }
             return team;
         }
-        public List<TeamUsers> UsersNotInTeam(int teamId)
+        public List<NotTeamMember> UsersNotInTeam(int teamId)
         {
-            List<TeamUsers> teamUsersList = new List<TeamUsers>();
+            List<NotTeamMember> teamUsersList = new List<NotTeamMember>();
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -171,7 +171,7 @@ namespace Omada.ManageTeamsAndSurveys
                             OmadaUser user = new OmadaUser();
                             user.Id = reader.GetString(0);
                             user.UserName = reader.GetString(1);
-                            teamUsersList.Add(new TeamUsers() 
+                            teamUsersList.Add(new NotTeamMember() 
                             { 
                                 User = user, 
                                 IsSelected = false 
@@ -253,7 +253,7 @@ namespace Omada.ManageTeamsAndSurveys
             }
             return teams;
         }
-        List<OmadaTeam> ITeamData.GetTeamsWhereUserNotMember(string userId)
+        public List<OmadaTeam> GetTeamsWhereUserNotMember(string userId)
         {
             List<OmadaTeam> teams = new List<OmadaTeam>();
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
@@ -312,6 +312,53 @@ namespace Omada.ManageTeamsAndSurveys
                 }
             }
             return teamUsers;
+        }
+        public void RemoveTeamMember(string userId, OmadaTeam team)
+        {
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"DELETE FROM dbo.Users_Teams 
+                                            WHERE TeamId = @TeamId
+                                            AND UserId = @UserId";
+                    command.Parameters.AddWithValue("@TeamId", team.Id);
+                    command.Parameters.AddWithValue("@UserId", userId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void SetNoLeaders(OmadaTeam team)
+        {
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"UPDATE dbo.Users_Teams 
+                                            SET IsLeader = 0
+                                            WHERE teamId = @teamId";
+                    command.Parameters.AddWithValue("@teamId", team.Id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateLeaderStatus(string userId, OmadaTeam team)
+        {
+            using (SqlConnection connection = DatabaseConnector.CreateConnection())
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = @"UPDATE dbo.Users_Teams 
+                                        SET IsLeader = 1
+                                        WHERE teamId = @teamId
+                                        AND UserId = @userId";
+                    command.Parameters.AddWithValue("@teamId", team.Id);
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
     }
 }

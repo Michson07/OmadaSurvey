@@ -14,12 +14,15 @@ namespace Omada.ManageTeamsAndSurveys
         OmadaTeam GetTeamById(int teamId);
         List<OmadaUser> GetTeamUsers(int teamId);
         OmadaTeam Update(OmadaTeam team);
-        List<TeamUsers> UsersNotInTeam(int teamId);
+        List<NotTeamMember> UsersNotInTeam(int teamId);
         void AddUserToTeam(string userId, int teamId, int isLeader);
         List<OmadaTeam> GetLeaderTeams(string leaderId);
         List<OmadaTeam> GetUserTeams(string userId);
         List<OmadaUser> GetTeamLeaders(OmadaTeam team);
         List<OmadaTeam> GetTeamsWhereUserNotMember(string userId);
+        void RemoveTeamMember(string userId, OmadaTeam team);
+        void SetNoLeaders(OmadaTeam team);
+        void UpdateLeaderStatus(string userId, OmadaTeam team);
     }
 
 }

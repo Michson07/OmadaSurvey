@@ -18,7 +18,9 @@ namespace Omada.Pages
         private readonly ITeamData teamData;
         private readonly UserManager<OmadaUser> userManager;
         public OmadaTeam Team { get; set; }
-        public List<TeamUsers> TeamUsersList { get; set; }
+        public List<NotTeamMember> NotTeamMembers { get; set; }
+        public List<TeamMember> TeamMembers { get; set; }
+        public bool TeamExists { get; set; }
         public EditTeamModel(ITeamData teamData, UserManager<OmadaUser> userManager)
         {
             this.teamData = teamData;
@@ -29,11 +31,12 @@ namespace Omada.Pages
         {
             if (!teamId.HasValue)
             {
+                TeamExists = false;
                 Team = new OmadaTeam();
-                TeamUsersList = new List<TeamUsers>();
+                NotTeamMembers = new List<NotTeamMember>();
                 foreach (var user in userManager.Users.Where(u => u.Id != userManager.GetUserId(User)))
                 {
-                    TeamUsersList.Add(new TeamUsers()
+                    NotTeamMembers.Add(new NotTeamMember()
                     {
                         User = user,
                         IsSelected = false
@@ -42,8 +45,20 @@ namespace Omada.Pages
             }
             else
             {
+                TeamExists = true;
                 Team = teamData.GetTeamById(teamId.Value);
-                TeamUsersList = teamData.UsersNotInTeam(teamId.Value);
+                NotTeamMembers = teamData.UsersNotInTeam(Team.Id);
+                TeamMembers = new List<TeamMember>();
+                foreach(var member in teamData.GetTeamUsers(Team.Id))
+                {
+                    TeamMembers.Add(new TeamMember()
+                    {
+                        User = member,
+                        IsLeader = teamData.GetTeamLeaders(Team).Where(l => l.Id == member.Id).Any() ? true : false,
+                        Remove = false
+                    });
+                    
+                }
             }
         }
 
@@ -58,11 +73,38 @@ namespace Omada.Pages
 
             return Page();
         }
+
+        private void AddNewUsersToTeam(OmadaTeam team)
+        {
+            var selectedUsers = NotTeamMembers.Where(u => u.IsSelected == true).Select(u => u.User.Id).ToList();
+            foreach (var user in selectedUsers)
+            {
+                teamData.AddUserToTeam(user, team.Id, 0);
+            }
+        }
+
+        private void RemoveTeamMembers(OmadaTeam team)
+        {
+            List<OmadaUser> removedMembers = TeamMembers.Where(m => m.Remove == true).Select(m => m.User).ToList();
+            foreach(var member in removedMembers)
+            {
+                teamData.RemoveTeamMember(member.Id, team);
+            }
+        }
+        private void UpdateLeaders(OmadaTeam team)
+        {
+            List<OmadaUser> updatedLeaders = TeamMembers.Where(m => m.IsLeader == true).Select(m => m.User).ToList();
+            teamData.SetNoLeaders(team);
+            foreach(var member in updatedLeaders)
+            {
+                teamData.UpdateLeaderStatus(member.Id, team);
+            }
+        }
         public IActionResult OnPost ()
         {
             if (!ModelState.IsValid)
             {
-                setUsers(null);
+                setUsers(Team.Id);
                 return Page();  
             }
 
@@ -76,11 +118,10 @@ namespace Omada.Pages
                 team = teamData.Add(Team);
                 teamData.AddUserToTeam(userManager.GetUserId(User), team.Id, 1);
             }
-            var selectedUsers = TeamUsersList.Where(t => t.IsSelected == true).Select(t => t.User.Id).ToList();
-            foreach (var user in selectedUsers)
-            {
-                teamData.AddUserToTeam(user, team.Id, 0);
-            }
+
+            AddNewUsersToTeam(team);
+            RemoveTeamMembers(team);
+            UpdateLeaders(team);
 
             return RedirectToPage("./TeamsList");
         }

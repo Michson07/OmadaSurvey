@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Omada.ManageTeamsAndSurveys
 {
-    public class TeamUsers
+    public class NotTeamMember
     {
         public OmadaUser User { get; set; }
         public bool IsSelected { get; set; }

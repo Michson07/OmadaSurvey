@@ -10,7 +10,8 @@
     <h1>Do you want to start survey?</h1>
     @if (!Model.IsUserAbleToStart)
     {
-        <a class="btn btn-dark" id="disabledButton" asp-area="" asp-page="">You have already taken the survey this week</a>
+        <a class="btn btn-dark" id="disabledButton" asp-area="" asp-page="">You have already taken the survey this week</a><br/><br/>
+        <a asp-page="./SurveyCompleted">See the statistics of teams you are a member</a>
     }
     else
     {

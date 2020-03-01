@@ -35,11 +35,13 @@ namespace Omada.Pages
             if(User.IsInRole("Admin"))
             {
                 Teams = teamData.GetAllTeams().Where(t => t.IsPublic == true);
+                IEnumerable<OmadaTeam> privateTeams = teamData.GetUserTeams(userManager.GetUserId(HttpContext.User))
+                                                    .Where(t => t.IsPublic == false);
+                Teams = Teams.Concat(privateTeams);
             }
             else if(User.IsInRole("Team Leader"))
             {
-                string leaderId = userManager.GetUserId(HttpContext.User);
-                Teams = teamData.GetLeaderTeams(leaderId);
+                Teams = teamData.GetLeaderTeams(userManager.GetUserId(HttpContext.User));
             }
 
             foreach(var team in Teams)

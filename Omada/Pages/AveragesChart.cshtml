@@ -10,27 +10,51 @@
         </canvas>
     </div>
     <table class="table table-light">
-        @foreach (var teams in Model.TeamsOpinions.Keys)
+        @foreach (var team in Model.TeamsOpinions.Keys)
         {
             <tr>
                 <td>
-                    <button class="btn btn-light" id="@teams" onclick="teamClick(this)">@teams</button>
-                    <div class="opinions" id="@teams opinions" style="display: none">
+                    <button class="btn btn-light" id="@team" onclick="teamClick(this)">@team</button>
+                    <div class="opinions" id="@team opinions" style="display: none">
                         <table class="table table-light">
-                            <tr>
-                                <th>Good Things</th>
-                                <th>Bad Things</th>
-                            </tr>
-                            @foreach (var opinion in Model.TeamsOpinions.Where(t => t.Key == teams).SelectMany(t => t.Value).ToList())
+                            @if (Model.TeamsOpinions.Where(t => t.Key == team).SelectMany(t => t.Value).Count() <= 0)
                             {
                                 <tr>
-                                    <td>
-                                        @opinion.SecondAnswer
-                                    </td>
-                                    <td>
-                                        @opinion.ThirdAnswer
-                                    </td>
+                                    <th>No data yet</th>
                                 </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <th>Good Things</th>
+                                    <th>Bad Things</th>
+
+                                </tr>
+                                @foreach (var opinion in Model.TeamsOpinions.Where(t => t.Key == team).SelectMany(t => t.Value).ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            @if(String.IsNullOrEmpty(opinion.SecondAnswer))
+                                            {
+                                                <p>No answer</p>
+                                            }
+                                            else
+                                            {
+                                                @opinion.SecondAnswer;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (String.IsNullOrEmpty(opinion.ThirdAnswer))
+                                            {
+                                                <p>No answer</p>
+                                            }
+                                            else
+                                            {
+                                                @opinion.ThirdAnswer;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
                             }
                         </table>
                     </div>

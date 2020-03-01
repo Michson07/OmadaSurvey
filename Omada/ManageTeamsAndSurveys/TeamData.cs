@@ -41,16 +41,16 @@ namespace Omada.ManageTeamsAndSurveys
                 using (command = connection.CreateCommand())
                 {
                     command.CommandText = @"INSERT INTO dbo.Teams 
-                                            VALUES(@Name, @IsPublic)";
+                                    VALUES(@Name, @IsPublic)";
                     command.Parameters.AddWithValue("@Name", team.Name);
                     command.Parameters.AddWithValue("@IsPublic", team.IsPublic);
                     command.ExecuteNonQuery();
                 }
-                using(command = connection.CreateCommand())
+                using (command = connection.CreateCommand())
                 {
                     command.CommandText = @"SELECT Id
-                                            FROM dbo.Teams
-                                            WHERE Name = @Name";
+                                    FROM dbo.Teams
+                                    WHERE Name = @Name";
                     command.Parameters.AddWithValue("@Name", team.Name);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {

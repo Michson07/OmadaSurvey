@@ -4,7 +4,6 @@
     ViewData["Title"] = "Teams";
 }
 
-<h1>Teams</h1>
 <a class="btn btn-dark" asp-area="" asp-page="./EditTeam">Add New Team</a>
 <table class="table table-light">
 @foreach (var teamUsers in Model.Teams_Users.Keys)

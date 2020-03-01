@@ -24,10 +24,9 @@ namespace Omada.Pages
         public IActionResult OnGet(int teamId)
         {
             Team = teamData.GetTeamById(teamId);
-            if(Team == null)
+            if(Team.Name == null)
             {
-                //return RedirectToPage("./NotFound");
-                return RedirectToPage("./Index");
+                return RedirectToPage("./NotFound");
             }
             return Page();
         }

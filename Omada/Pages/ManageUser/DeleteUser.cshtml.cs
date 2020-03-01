@@ -22,8 +22,7 @@ namespace Omada.Pages.ManageUser
             DeletedUser = userData.GetUserById(userId);
             if(DeletedUser == null)
             {
-                //return RedirectToPage("./NotFound");
-                return RedirectToPage("./Index");
+                return RedirectToPage("../NotFound");
             }
             return Page();
         }
@@ -33,10 +32,8 @@ namespace Omada.Pages.ManageUser
             userData.Commit();
             if(DeletedUser == null)
             {
-                //return RedirectToPage("./NotFound");
-                return RedirectToPage("./Index");
+                return RedirectToPage("../NotFound");
             }
-            TempData["Message"] = $"{DeletedUser.Email} deleted";
             return RedirectToPage("../UsersList");
         }
     }

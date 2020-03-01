@@ -34,45 +34,45 @@
         </div>
         @if (Model.TeamExists)
         {
-        <div class="modifyMembers">
-            <button type="button" class="btn btn-sm" onclick="buttonClicked('modifyUsers')">Modify Team Members?</button>
-            <div id="modifyUsers" style="display: none">
-                <table class="table-light">
-                    <tr>
-                        <th></th>
-                        <th>IsLeader</th>
-                        <th>Delete</th>
-                    </tr>
-                    @for (int i = 0; i < Model.TeamMembers.Count(); i++)
-                    {
+            <div class="modifyMembers">
+                <button type="button" class="btn btn-sm" onclick="buttonClicked('modifyUsers')">Modify Team Members?</button>
+                <div id="modifyUsers" style="display: none">
+                    <table class="table-light">
                         <tr>
-                            <td>
-                                <label>@Model.TeamMembers[i].User.Email</label>
-                            </td>
-                            <td>
-                                @if (Model.TeamMembers[i].IsLeader == true)
-                                {
-                                    <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
-                                    <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                                }
-                                else
-                                {
-                                    <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
-                                    <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                                }
-                            </td>
-                            <td>
-                                <input type="checkbox" asp-for="@Model.TeamMembers[i].Remove" />
-                                <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                            </td>
+                            <th></th>
+                            <th>IsLeader</th>
+                            <th>Delete</th>
                         </tr>
-                    }
-                </table>
+                        @for (int i = 0; i < Model.TeamMembers.Count(); i++)
+                        {
+                            <tr>
+                                <td>
+                                    <label>@Model.TeamMembers[i].User.Email</label>
+                                </td>
+                                <td>
+                                    @if (Model.TeamMembers[i].IsLeader == true)
+                                    {
+                                        <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
+                                        <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
+                                        <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                                    }
+                                </td>
+                                <td>
+                                    <input type="checkbox" asp-for="@Model.TeamMembers[i].Remove" />
+                                    <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
             </div>
-        </div>
         }
     </div>
-    <br/><button type="submit" class="btn btn-dark" name="submitButton">Save</button>
+    <br /><button type="submit" class="btn btn-dark" name="submitButton">Save</button>
 </form>
 
 @section Scripts

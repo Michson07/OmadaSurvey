@@ -67,8 +67,7 @@ namespace Omada.Pages
             setUsers(teamId);
             if (Team == null)
             {
-                return RedirectToPage("./Index");
-                //return RedirectToPage("./NotFound");
+                return RedirectToPage("./NotFound");
             }
 
             return Page();

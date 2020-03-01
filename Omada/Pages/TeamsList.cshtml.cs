@@ -49,7 +49,7 @@ namespace Omada.Pages
             else
             {
                 teams = teamData.GetAllTeams().Where(t => t.IsPublic == true).ToList();
-                var privateUserTeams = (teamData.GetUserTeams(userManager.GetUserId(User)).Where(t => t.IsPublic == false)).ToList();
+                IEnumerable<OmadaTeam> privateUserTeams = (teamData.GetUserTeams(userManager.GetUserId(User)).Where(t => t.IsPublic == false)).ToList();
                 teams = teams.Concat(privateUserTeams);
             }
             foreach (var team in teams)
@@ -58,7 +58,6 @@ namespace Omada.Pages
                 teamUsers = teamData.GetTeamUsers(team.Id);
                 Teams_Users.Add(team, teamUsers);
             }
-            
         }
         public void OnPost([FromBody]int teamId)
         {

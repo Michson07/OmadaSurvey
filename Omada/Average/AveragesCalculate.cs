@@ -65,7 +65,7 @@ namespace Omada.Average
                                                 (SELECT UserID 
                                                 FROM Users_Teams
                                                 WHERE TeamId = @TeamId
-                                                AND YEAR(SurveyDate) = 2020)
+                                                AND YEAR(SurveyDate) = @SurveysYear)
                                                 AND DATEPART(ww, SurveyDate) = @Week";
                     command.Parameters.AddWithValue("@TeamId", team.Id);
                     command.Parameters.AddWithValue("@SurveysYear", DateTime.UtcNow.Year);

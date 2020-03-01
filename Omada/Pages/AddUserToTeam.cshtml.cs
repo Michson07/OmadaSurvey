@@ -38,8 +38,7 @@ namespace Omada.Pages
             AddedUser = userData.GetUserById(userId);
             if(AddedUser == null)
             {
-                //return RedirectToPage("./NotFound");
-                return RedirectToPage("./Index");
+                return RedirectToPage("./NotFound");
             }
             if(User.IsInRole("Admin"))
             {

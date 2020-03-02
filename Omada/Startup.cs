@@ -30,7 +30,6 @@ namespace Omada
             services.AddMvc();
             services.AddScoped<IUserData, UserData>();
             services.AddScoped<ITeamData, TeamData>();
-            services.AddScoped<LeaderTeam>();
             services.AddScoped<TeamData>();
             services.AddScoped<UserData>();
             services.AddScoped<SurveyData>();

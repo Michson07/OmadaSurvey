@@ -26,6 +26,7 @@ namespace Omada.ManageTeamsAndSurveys
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
                             team.IsPublic = reader.GetBoolean(2);
+                            team.OpinionsVisible = reader.GetBoolean(3);
                             teams.Add(team);
                         }
                     }
@@ -41,9 +42,10 @@ namespace Omada.ManageTeamsAndSurveys
                 using (command = connection.CreateCommand())
                 {
                     command.CommandText = @"INSERT INTO dbo.Teams 
-                                    VALUES(@Name, @IsPublic)";
+                                    VALUES(@Name, @IsPublic, @OpinionsVisible)";
                     command.Parameters.AddWithValue("@Name", team.Name);
                     command.Parameters.AddWithValue("@IsPublic", team.IsPublic);
+                    command.Parameters.AddWithValue("@OpinionsVisible", team.OpinionsVisible);
                     command.ExecuteNonQuery();
                 }
                 using (command = connection.CreateCommand())
@@ -97,6 +99,7 @@ namespace Omada.ManageTeamsAndSurveys
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
                             team.IsPublic = reader.GetBoolean(2);
+                            team.OpinionsVisible = reader.GetBoolean(3);
                         }
                     }
                 }
@@ -139,11 +142,12 @@ namespace Omada.ManageTeamsAndSurveys
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = @"UPDATE dbo.Teams 
-                                            SET Name = @Name, IsPublic = @IsPublic
+                                            SET Name = @Name, IsPublic = @IsPublic, OpinionsVisible = @OpinionsVisible
                                             WHERE Id = @Id";
                     command.Parameters.AddWithValue("@Id", team.Id);
                     command.Parameters.AddWithValue("@Name", team.Name);
                     command.Parameters.AddWithValue("@IsPublic", team.IsPublic);
+                    command.Parameters.AddWithValue("@OpinionsVisible", team.OpinionsVisible);
 
                     command.ExecuteNonQuery();
                 }
@@ -203,7 +207,7 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic, dbo.Teams.OpinionsVisible
                                             FROM dbo.Users_Teams
                                             JOIN dbo.Teams 
                                             ON dbo.Users_Teams.TeamId = dbo.Teams.Id
@@ -218,6 +222,7 @@ namespace Omada.ManageTeamsAndSurveys
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
                             team.IsPublic = reader.GetBoolean(2);
+                            team.OpinionsVisible = reader.GetBoolean(3);
                             teams.Add(team);
                         }
                     }
@@ -232,7 +237,7 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
+                    command.CommandText = @"SELECT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic, dbo.Teams.OpinionsVisible
                                             FROM dbo.Users_Teams
                                             JOIN dbo.Teams 
                                             ON dbo.Users_Teams.TeamId = dbo.Teams.Id
@@ -246,6 +251,7 @@ namespace Omada.ManageTeamsAndSurveys
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
                             team.IsPublic = reader.GetBoolean(2);
+                            team.OpinionsVisible = reader.GetBoolean(3);
                             teams.Add(team);
                         }
                     }
@@ -260,7 +266,7 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = @"SELECT DISTINCT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic
+                    command.CommandText = @"SELECT DISTINCT dbo.Teams.Id, dbo.Teams.Name, dbo.Teams.IsPublic, dbo.Teams.OpinionsVisible
                                             FROM dbo.Users_Teams
                                             JOIN dbo.Teams 
                                             ON dbo.Users_Teams.TeamId = dbo.Teams.Id
@@ -277,6 +283,7 @@ namespace Omada.ManageTeamsAndSurveys
                             team.Id = reader.GetInt32(0);
                             team.Name = reader.GetString(1);
                             team.IsPublic = reader.GetBoolean(2);
+                            team.OpinionsVisible = reader.GetBoolean(3);
                             teams.Add(team);
                         }
                     }

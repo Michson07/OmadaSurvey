@@ -22,6 +22,8 @@ namespace Omada.Pages
 
         public List<OmadaTeam> Teams { get; set; }
         public Dictionary<string, List<OmadaSurveysAverage>> AverageWeeks = new Dictionary<string, List<OmadaSurveysAverage>>();
+        public Dictionary<string, List<OmadaSurvey>> TeamsOpinions = new Dictionary<string, List<OmadaSurvey>>();
+
         public bool IsSurveyNotCompleted { get; set; }
         public SurveyCompletedModel(SurveyData surveyData, UserManager<OmadaUser> userManager, ITeamData teamData, AveragesCalculate averagesCalculate)
         {
@@ -43,6 +45,12 @@ namespace Omada.Pages
             {
                 var averages = averagesCalculate.GetSurveysAverages(team);
                 AverageWeeks.Add(team.Name, averages);
+                if(team.OpinionsVisible == true)
+                {
+                    var opinions = averagesCalculate.GetOpinionsFromCurrentWeek(team, AveragesCalculate.GetCurrentWeek());
+                    TeamsOpinions.Add(team.Name, opinions);
+                }
+                
             }
             return Page();
         }

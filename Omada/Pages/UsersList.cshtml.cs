@@ -16,19 +16,20 @@ namespace Omada.Pages
     public class UsersListModel : PageModel
     {
         private readonly UserManager<OmadaUser> userManager;
+        private readonly ITeamData teamData;
 
         public IEnumerable<OmadaUser> Users { get; set; }
         public List<OmadaTeam> Teams { get; set; }
 
-        public UsersListModel(UserManager<OmadaUser> userManager)
+        public UsersListModel(UserManager<OmadaUser> userManager, ITeamData teamData)
         {
             this.userManager = userManager;
+            this.teamData = teamData;
         }
         public void OnGet()
         {
             Users = userManager.Users;
-            LeaderTeam team = new LeaderTeam();
-            Teams = team.GetTeams(userManager.GetUserId(HttpContext.User));
+            Teams = teamData.GetLeaderTeams(userManager.GetUserId(HttpContext.User));
         }
     }
 }

@@ -9,6 +9,59 @@
 <div class="container">
     <canvas id="chart">
     </canvas>
+    <table class="table table-light">
+        @foreach (var team in Model.TeamsOpinions.Keys)
+        {
+            <tr>
+                <td>
+                    <button class="btn btn-light" id="@team" onclick="teamClick(this)">@team</button>
+                    <div class="opinions" id="@team opinions" style="display: none">
+                        <table class="table table-light">
+                            @if (Model.TeamsOpinions.Where(t => t.Key == team).SelectMany(t => t.Value).Count() <= 0)
+                            {
+                                <tr>
+                                    <th>No data yet</th>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <th>Good Things</th>
+                                    <th>Bad Things</th>
+
+                                </tr>
+                                @foreach (var opinion in Model.TeamsOpinions.Where(t => t.Key == team).SelectMany(t => t.Value).ToList())
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (String.IsNullOrEmpty(opinion.SecondAnswer))
+                                            {
+                                                <p>No answer</p>
+                                            }
+                                            else
+                                            {
+                                                @opinion.SecondAnswer;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (String.IsNullOrEmpty(opinion.ThirdAnswer))
+                                            {
+                                                <p>No answer</p>
+                                            }
+                                            else
+                                            {
+                                                @opinion.ThirdAnswer;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 
 @section Scripts
@@ -67,6 +120,17 @@
         },
         options: {}
     });
+
+    function teamClick(button) {
+      var name = button.id;
+      var users = document.getElementById((name) + " opinions");
+      if (users.style.display === "none") {
+        users.style.display = "block";
+      }
+      else {
+        users.style.display = "none";
+      }
+    };
     </script>
 }
 

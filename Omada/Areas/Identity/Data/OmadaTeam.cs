@@ -12,5 +12,6 @@ namespace Omada.Areas.Identity.Data
         [Required]
         public string Name { get; set; }
         public bool IsPublic { get; set; }
+        public bool OpinionsVisible { get; set; }
     }
 }

@@ -24,5 +24,4 @@ namespace Omada.ManageTeamsAndSurveys
         void SetNoLeaders(OmadaTeam team);
         void UpdateLeaderStatus(string userId, OmadaTeam team);
     }
-
 }

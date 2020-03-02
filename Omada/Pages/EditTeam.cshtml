@@ -17,6 +17,12 @@
         <br /><input type="radio" asp-for="Team.IsPublic" value="true" />Yes
         <br /><input type="radio" asp-for="Team.IsPublic" value="false" />No
         <span class="text-danger" asp-validation-for="Team.IsPublic"></span>
+    </div>    
+    <div class="form-group">
+        <label asp-for="Team.OpinionsVisible">Can all members see opinions about last week?</label>
+        <br /><input type="radio" asp-for="Team.OpinionsVisible" value="true" />Yes
+        <br /><input type="radio" asp-for="Team.OpinionsVisible" value="false" />No
+        <span class="text-danger" asp-validation-for="Team.OpinionsVisible"></span>
     </div>
     <div>
         <div class="newMembers">

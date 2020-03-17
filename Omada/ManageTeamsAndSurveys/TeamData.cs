@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Omada.Areas.Identity.Data;
 
@@ -34,7 +36,7 @@ namespace Omada.ManageTeamsAndSurveys
                 return teams;
             }
         }
-        public OmadaTeam Add(OmadaTeam team)
+        public OmadaTeam Add(OmadaTeam team, string userId)
         {
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
             {
@@ -62,6 +64,7 @@ namespace Omada.ManageTeamsAndSurveys
                         }
                     }
                 }
+                AddUserToTeam(userId, team.Id, 1);
             }
             return team;
         }
@@ -186,6 +189,7 @@ namespace Omada.ManageTeamsAndSurveys
             }
             return teamUsersList;
         }
+
         public void AddUserToTeam(string userId, int teamId, int isLeader)
         {
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
@@ -199,6 +203,7 @@ namespace Omada.ManageTeamsAndSurveys
                     command.ExecuteNonQuery();
                 }
             }
+            
         }
         public List<OmadaTeam> GetLeaderTeams(string leaderId)
         {
@@ -320,7 +325,7 @@ namespace Omada.ManageTeamsAndSurveys
             }
             return teamUsers;
         }
-        public void RemoveTeamMember(string userId, OmadaTeam team)
+        public void RemoveTeamMember(string userId, int team)
         {
             using (SqlConnection connection = DatabaseConnector.CreateConnection())
             {
@@ -329,7 +334,7 @@ namespace Omada.ManageTeamsAndSurveys
                     command.CommandText = @"DELETE FROM dbo.Users_Teams 
                                             WHERE TeamId = @TeamId
                                             AND UserId = @UserId";
-                    command.Parameters.AddWithValue("@TeamId", team.Id);
+                    command.Parameters.AddWithValue("@TeamId", team);
                     command.Parameters.AddWithValue("@UserId", userId);
                     command.ExecuteNonQuery();
                 }

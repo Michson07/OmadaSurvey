@@ -59,30 +59,24 @@ namespace Omada.Pages
                 Teams_Users.Add(team, teamUsers);
             }
         }
-        public void OnPost([FromBody]int teamId)
+        public ActionResult OnPost([FromBody]int teamId)
         {
             Team = teamData.GetTeamById(teamId);
             List<OmadaUser> leaders = teamData.GetTeamLeaders(Team);
-
+            EmailSender emailSender = new EmailSender();
             foreach (var leader in leaders)
             {
                 string email = leader.Email;
                 string userId = userManager.GetUserId(HttpContext.User);
                 OmadaUser user = userManager.FindByIdAsync(userId).Result;
-                using (MailMessage mail = new MailMessage())
+                string subject = "Request to be added to team ";
+                string body = $"{user.UserName} wants to join your team {Team.Name}";
+                if(!emailSender.SendEmail(email, subject, body))
                 {
-                    mail.From = new MailAddress("email@gmail.com");
-                    mail.To.Add(email);
-                    mail.Subject = "Request to be added to team ";
-                    mail.Body = $"{user.UserName} wants to join your team {Team.Name}";
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                    {
-                        smtp.Credentials = new NetworkCredential("mail@gmail.com", "password"); //change this to send
-                        smtp.EnableSsl = true;
-                        smtp.Send(mail);
-                    }
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Error occurred during sending email! Please, try again later");
                 }
             }
+            return StatusCode((int)HttpStatusCode.OK, "Request Sent");
         }
     }
 }

@@ -8,26 +8,33 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Omada.Areas.Identity.Data;
 using Omada.ManageTeamsAndSurveys;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Omada.Pages.ManageUser;
 
 namespace Omada.Pages
 {
-    [BindProperties]
+    [BindProperties(SupportsGet = true)]
     [Authorize]
     public class EditTeamModel : PageModel
     {
         private readonly ITeamData teamData;
         private readonly UserManager<OmadaUser> userManager;
+        private readonly IUserData userData;
+
         public OmadaTeam Team { get; set; }
         public List<NotTeamMember> NotTeamMembers { get; set; }
         public List<TeamMember> TeamMembers { get; set; }
         public bool TeamExists { get; set; }
-        public EditTeamModel(ITeamData teamData, UserManager<OmadaUser> userManager)
+        public string membersJson;
+        public EditTeamModel(ITeamData teamData, UserManager<OmadaUser> userManager, IUserData userData)
         {
             this.teamData = teamData;
             this.userManager = userManager;
+            this.userData = userData;
         }
 
-        private void setUsers(int? teamId)
+        private void SetUsers(int? teamId)
         {
             if (!teamId.HasValue)
             {
@@ -62,9 +69,14 @@ namespace Omada.Pages
             }
         }
 
+        private void SerializeMembers()
+        {
+            membersJson = JsonSerializer.Serialize(NotTeamMembers.Select(m => m.User.UserName).ToList());
+        }
         public IActionResult OnGet(int? teamId)
         {
-            setUsers(teamId);
+            SetUsers(teamId);
+            SerializeMembers();
             if (Team == null)
             {
                 return RedirectToPage("./NotFound");
@@ -82,14 +94,6 @@ namespace Omada.Pages
             }
         }
 
-        private void RemoveTeamMembers(OmadaTeam team)
-        {
-            List<OmadaUser> removedMembers = TeamMembers.Where(m => m.Remove == true).Select(m => m.User).ToList();
-            foreach(var member in removedMembers)
-            {
-                teamData.RemoveTeamMember(member.Id, team);
-            }
-        }
         private void UpdateLeaders(OmadaTeam team)
         {
             List<OmadaUser> updatedLeaders = TeamMembers.Where(m => m.IsLeader == true).Select(m => m.User).ToList();
@@ -99,29 +103,42 @@ namespace Omada.Pages
                 teamData.UpdateLeaderStatus(member.Id, team);
             }
         }
-        public IActionResult OnPost ()
+
+        public void OnPost([FromBody] UserTeamJSON userTeamJSON)
+        {
+            var user = userData.GetUserByName(userTeamJSON.Nick);
+            int team = 0;
+            try
+            {
+                team = Int32.Parse(userTeamJSON.Team);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            teamData.RemoveTeamMember(user.Id, team);
+        }
+
+        public async Task<IActionResult> OnPostFinalAsync ()
         {
             if (!ModelState.IsValid)
             {
-                setUsers(Team.Id);
+                SetUsers(Team.Id);
                 return Page();  
             }
 
-            OmadaTeam team = new OmadaTeam();
             if (Team.Id > 0)
             {
-                team = teamData.Update(Team);
+                OmadaTeam team = teamData.Update(Team);
+                AddNewUsersToTeam(team);
+                UpdateLeaders(team);
             }
             else
             {
-                team = teamData.Add(Team);
-                teamData.AddUserToTeam(userManager.GetUserId(User), team.Id, 1);
+                OmadaTeam team = teamData.Add(Team, userManager.GetUserId(User));
             }
 
-            AddNewUsersToTeam(team);
-            RemoveTeamMembers(team);
-            UpdateLeaders(team);
-
+            await HttpContext.RefreshLoginAsync();
             return RedirectToPage("./TeamsList");
         }
     }

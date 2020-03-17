@@ -31,9 +31,10 @@ namespace Omada.Pages
             return Page();
         }
 
-        public IActionResult OnPost(int teamId)
+        public async Task<IActionResult> OnPostAsync(int teamId)
         {
             teamData.Delete(teamId);
+            await HttpContext.RefreshLoginAsync();
             return RedirectToPage("./TeamsList");
         }
     }

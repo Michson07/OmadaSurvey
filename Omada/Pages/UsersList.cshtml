@@ -9,27 +9,30 @@
     {
     <tr>
         <td>@user.Email</td>
-        <td>
-            <a class="btn btn-dark"
-               asp-page="./ManageUser/DeleteUser" asp-route-userId="@user.Id">
-                Delete
-            </a>
-        </td>
-        <td>
-            <a class="btn btn-dark"
-                asp-page="./AddUserToTeam" asp-route-userId="@user.Id">
-                Add User To Team
-            </a>
-        </td>
-        @*else if(this.User.IsInRole("Team Leader"))
+        @if (User.IsInRole("Admin"))
         {
-        <td>
-            <a class="btn btn-dark"
-               asp-page="./AddUserToTeamLeader" asp-route-userId="@user.Id" asp-route-teamId="@Model.Teams">
-                Add User To Your Team
-            </a>
-        </td>
-        }*@
+            <td>
+                <a class="btn btn-dark"
+                   asp-page="./ManageUser/DeleteUser" asp-route-userId="@user.Id">
+                    Delete
+                </a>
+            </td>
+            <td>
+                <a class="btn btn-dark"
+                   asp-page="./AddUserToTeam" asp-route-userId="@user.Id">
+                    Add User To Team
+                </a>
+            </td>
+        }
+        else if (this.User.IsInRole("Team Leader"))
+        {
+            <td>
+                <a class="btn btn-dark"
+                   asp-page="./AddUserToTeam" asp-route-userId="@user.Id">
+                    Add User To Team
+                </a>
+            </td>
+        }
     </tr>
     }
 </table>

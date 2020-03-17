@@ -24,34 +24,37 @@
         <br /><input type="radio" asp-for="Team.OpinionsVisible" value="false" />No
         <span class="text-danger" asp-validation-for="Team.OpinionsVisible"></span>
     </div>
-    <div>
-        <div class="newMembers">
-            <button type="button" class="btn btn-sm" onclick="buttonClicked('addUsers')">Add New Team Members?</button>
-            <div id="addUsers" class="form-group" style="display: none;">
-                @for (int i = 0; i < Model.NotTeamMembers.Count(); i++)
-                {
-                    <div class="form-check">
-                        <input type="checkbox" asp-for="@Model.NotTeamMembers[i].IsSelected" />
-                        <label asp-for="@Model.NotTeamMembers[i].IsSelected">@Model.NotTeamMembers[i].User.UserName</label>
-                        <input type="hidden" asp-for="@Model.NotTeamMembers[i].User.Id" />
-                    </div>
-                }
-            </div>
+
+    <div class="newMembers">
+        <button type="button" class="btn btn-sm" onclick="buttonClicked('addUsers')">Add New Team Members?</button>
+        <div id="addUsers" class="form-group" style="display: none;">
+            <input type="text" id="search"/>
+            <button type="button" onclick="searchMember()"><i class="fa fa-search"></i></button>
+            @for (int i = 0; i < Model.NotTeamMembers.Count(); i++)
+            {
+                <div class="form-check" id='@Model.NotTeamMembers[i].User.UserName' style="display: none">
+                    <input type="checkbox" asp-for="@Model.NotTeamMembers[i].IsSelected" />
+                    <label asp-for="@Model.NotTeamMembers[i].IsSelected">@Model.NotTeamMembers[i].User.UserName</label>
+                    <input type="hidden" asp-for="@Model.NotTeamMembers[i].User.Id" />
+                </div>
+            }
+        </div>
+            
         </div>
         @if (Model.TeamExists)
         {
             <div class="modifyMembers">
                 <button type="button" class="btn btn-sm" onclick="buttonClicked('modifyUsers')">Modify Team Members?</button>
                 <div id="modifyUsers" style="display: none">
-                    <table class="table-light">
+                    <table class="table-light" id="members">
                         <tr>
                             <th></th>
-                            <th>IsLeader</th>
-                            <th>Delete</th>
+                            <th>Is Leader?</th>
+                            <th></th>
                         </tr>
                         @for (int i = 0; i < Model.TeamMembers.Count(); i++)
                         {
-                            <tr>
+                            <tr id="@Model.TeamMembers[i].User.UserName">
                                 <td>
                                     <label>@Model.TeamMembers[i].User.Email</label>
                                 </td>
@@ -68,8 +71,7 @@
                                     }
                                 </td>
                                 <td>
-                                    <input type="checkbox" asp-for="@Model.TeamMembers[i].Remove" />
-                                    <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                                    <input type="button" class="btn btn-dark" value="Remove" onclick="removeFromTeam('@Model.TeamMembers[i].User.Email', '@Model.Team.Id')"/>
                                 </td>
                             </tr>
                         }
@@ -77,15 +79,48 @@
                 </div>
             </div>
         }
-    </div>
-    <br /><button type="submit" class="btn btn-dark" name="submitButton">Save</button>
+    <br /><button type="submit" class="btn btn-dark" name="submitButton" asp-page-handler="Final">Save</button>
 </form>
 
 @section Scripts
 {
 <script>
-    //var addUsers = document.getElementById("addUsers");
-    //var modifyUsers = document.getElementById("modifyUsers");
+    var notTeamMembersJson = @Html.Raw(Json.Serialize(Model.membersJson));
+    var notTeamMembers = JSON.parse(notTeamMembersJson);
+
+    function searchMember()
+    {
+        var input = document.getElementById("search").value;
+        for (var member of notTeamMembers) {
+            if (member.includes(input)) {
+                document.getElementById(member).style.display = "block";
+            }
+            else {
+                document.getElementById(member).style.display = "none";
+            }
+        }
+    };
+
+    function removeFromTeam(nick, team) {
+        document.getElementById(nick).style.display = "none";
+        $.ajax({
+            url: "/EditTeam",
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            headers:
+            {
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            async: true,
+            data: JSON.stringify({
+                Nick: nick,
+                Team: team
+            })
+        }).done(function (result) {
+            
+        });
+    };
+    
     function buttonClicked(users) {
         var users = document.getElementById(users);
         if (users.style.display === "none") {

@@ -4,6 +4,9 @@
     ViewData["Title"] = "Teams";
 }
 
+<div style="text-align: center; margin: auto; width: 50%; height: 10px; padding: 50px">
+    <p id="message"></p>
+</div>
 <a class="btn btn-dark" asp-area="" asp-page="./EditTeam">Add New Team</a>
 <table class="table table-light">
 @foreach (var teamUsers in Model.Teams_Users.Keys)
@@ -39,7 +42,7 @@
                 @if (!Model.CheckIfUserInTeam(teamUsers.Id))
                 {
                     <form method="post">
-                        <button type="button" class="btn btn-dark" onclick="sendEmail(@teamUsers.Id)">Send Email With Request To Join</button>
+                        <button type="button" class="btn btn-dark" onclick="sendEmail(@teamUsers.Id)">Request To Join</button>
                     </form>
                 }
                 else
@@ -69,6 +72,15 @@
 @section Scripts
 {
 <script>
+
+    function setMessageAfterClick(text, color) {
+        $('#message').fadeIn(1000);
+        $('#message').text(text);
+        $('#message').css("background-color", color);
+        $('#message').css("padding", "10px");
+        $('#message').css("font-weight", "bold");
+        $('#message').delay(3000).fadeOut("slow");
+    };
     function sendEmail(teamId) {
         var team = teamId;
         console.log(JSON.stringify(team));
@@ -80,7 +92,16 @@
             {
                 "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
             },
-            data: JSON.stringify(team)
+            async: true,
+            data: JSON.stringify(team),
+            success: function (response) {
+                setMessageAfterClick(response, "#7FE817");
+                console.log("Message : " + response);
+                }, 
+            error: function (response, textStatus, errorThrown) {
+                setMessageAfterClick(response.responseText, "#F75D59");
+                console.log("Error : " + response.responseText + " Status: " + textStatus + " Http error:" + errorThrown);
+            }
         }).done(function (result) {
         });
     };

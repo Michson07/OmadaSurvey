@@ -9,6 +9,7 @@ using Omada.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Mail;
 using System.Net;
+using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Areas.Identity.Pages.Account
 {
@@ -52,21 +53,12 @@ namespace Omada.Areas.Identity.Pages.Account
             protocol: Request.Scheme);
 
             Email = email;
-            using (MailMessage mail = new MailMessage())
-            {
-                mail.From = new MailAddress("Omada@omada.com");
-                mail.To.Add(Email);
-                mail.Subject = "Confirm Email";
-                mail.Body = $"Thank you for register. Please confirm your account by clicking following link "
+            string subject = "Confirm Email";
+            string mailBody = $"Thank you for register. Please confirm your account by clicking following link "
                             + EmailConfirmationUrl;
-                using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                {
-                    smtp.Credentials = new NetworkCredential("Omada@gmail.com", "password"); //change this to send 
-                    smtp.EnableSsl = true;
-                    smtp.Send(mail);
-                }
-            }
-
+            EmailSender emailSender = new EmailSender();
+            emailSender.SendEmail(Email, subject, mailBody);
+           
             return Page();
         }
     }

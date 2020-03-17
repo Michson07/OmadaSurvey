@@ -9,7 +9,7 @@ namespace Omada.ManageTeamsAndSurveys
     public interface ITeamData
     {
         List<OmadaTeam> GetAllTeams();
-        OmadaTeam Add(OmadaTeam team);
+        OmadaTeam Add(OmadaTeam team, string userId);
         void Delete(int teamId);
         OmadaTeam GetTeamById(int teamId);
         List<OmadaUser> GetTeamUsers(int teamId);
@@ -20,7 +20,7 @@ namespace Omada.ManageTeamsAndSurveys
         List<OmadaTeam> GetUserTeams(string userId);
         List<OmadaUser> GetTeamLeaders(OmadaTeam team);
         List<OmadaTeam> GetTeamsWhereUserNotMember(string userId);
-        void RemoveTeamMember(string userId, OmadaTeam team);
+        void RemoveTeamMember(string userId, int team);
         void SetNoLeaders(OmadaTeam team);
         void UpdateLeaderStatus(string userId, OmadaTeam team);
     }

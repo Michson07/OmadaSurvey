@@ -20,7 +20,7 @@
                             @if (Model.TeamsOpinions.Where(t => t.Key == team).SelectMany(t => t.Value).Count() <= 0)
                             {
                                 <tr>
-                                    <th>No data yet</th>
+                                    <th>No comments this week</th>
                                 </tr>
                             }
                             else

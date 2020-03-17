@@ -14,6 +14,7 @@ namespace Omada.Pages.ManageUser
         OmadaUser GetUserById(string id);
         public string GetUserEmail(OmadaUser user);
         int Commit();
+        OmadaUser GetUserByName(string nick);
 
     }
 }

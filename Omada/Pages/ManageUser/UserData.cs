@@ -50,5 +50,10 @@ namespace Omada.Pages.ManageUser
         {
             return db.SaveChanges();
         }
+
+        public OmadaUser GetUserByName(string nick)
+        {
+            return db.Users.FirstOrDefault(u => u.UserName == nick);
+        }
     }
 }

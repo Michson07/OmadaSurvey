@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Omada.Areas.Identity.Data;
 using System.Net.Mail;
 using System.Net;
+using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Areas.Identity.Pages.Account
 {
@@ -58,22 +59,11 @@ namespace Omada.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
-
-                using (MailMessage mail = new MailMessage())
-                {
-                    mail.From = new MailAddress("Omada@omada.com");
-                    mail.To.Add(Input.Email);
-                    mail.Subject = "Reset Password";
-                    mail.Body = $"<p>Please reset your password by</p>" +
+                string subject = "Reset Password";
+                string body = $"<p>Please reset your password by</p>" +
                                 $"<a href = \"{HtmlEncoder.Default.Encode(callbackUrl)}\">Yes, I forgot my password!</a>";
-                    mail.IsBodyHtml = true;
-                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
-                    {
-                        smtp.Credentials = new NetworkCredential("mail@gmail.com", "password"); //change this to send 
-                        smtp.EnableSsl = true;
-                        smtp.Send(mail);
-                    }
-                }
+                EmailSender emailSender = new EmailSender();
+                emailSender.SendEmail(Input.Email, subject, body);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

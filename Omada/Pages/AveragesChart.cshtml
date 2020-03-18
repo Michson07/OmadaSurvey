@@ -8,10 +8,6 @@
     <div>
         <canvas id="chart">
         </canvas>
-        <div style="text-align: center">
-            <button id="left" class="btn btn-dark" type="button">&#8249;</button>
-            <button id="right" class="btn btn-dark" type="button">&#8250;</button>
-        </div>
     </div>
     <table class="table table-light">
         @foreach (var team in Model.TeamsOpinions.Keys)
@@ -99,11 +95,9 @@
         for (var key in dictionary) {
             if (dictionary.hasOwnProperty(key)) {
                 var averages = dictionary[key].map(function (v) {
-                    if (v.week >= startWeek) {
                         return {
                             x: v.week,
                             y: v.average
-                        }
                     };
                 });
                 var color = colors();
@@ -121,7 +115,7 @@
     function createChart() {
         weeks.splice(0, weeks.length);
         myDatasets.splice(0, myDatasets.length);
-        for (var i = startWeek; i <= today.getWeekNumber(); i++) {
+        for (var i = 1; i <= today.getWeekNumber(); i++) {
             weeks.push(i);
         }
         addData();
@@ -131,16 +125,41 @@
                 labels: weeks,
                 datasets: myDatasets
             },
+
             options: {
+                scales: {
+                     xAxes: [{
+                         ticks: {
+                             min: startWeek,
+                             max: today.getWeekNumber()
+                        }
+                    }]
+                },
                 plugins: {
                     zoom: {
                         pan: {
                             enabled: true,
                             mode: 'xy',
+                            rangeMin: {
+				                x: 1,
+				                y: 1
+                            },
+                            rangeMax: {
+                                x: today.getWeekNumber(),
+				                y: 5
+			                },
                         },
                         zoom: {
                             enabled: true,
                             mode: 'xy',
+                            rangeMin: {
+				                x: 1,
+				                y: 1
+                            },
+                            rangeMax: {
+                                x: today.getWeekNumber(),
+				                y: 5
+			                },
                             speed: 0.1,
                             sensitivity: 3
                         },
@@ -152,32 +171,6 @@
     }
 
     window.onload = createChart();
-    var right = document.getElementById("right");
-    var left = document.getElementById("left");
-
-    if (startWeek - 5 <= 0) {
-        left.disabled = true;
-    }
-    if (startWeek >= today.getWeekNumber()) {
-        right.disabled = true;
-    }
-
-    left.onclick = function () {
-        if (startWeek - 5 >= 0) {
-            startWeek = startWeek - 2;
-            alert(startWeek);
-            createChart();
-        }
-    };
-
-
-    right.onclick = function () {
-        if (startWeek + 5 < today.getWeekNumber()) {
-            startWeek = startWeek + 5;
-            createChart();
-        }
-    };
-
     function teamClick(button) {
       var name = button.id;
       var users = document.getElementById((name) + " opinions");

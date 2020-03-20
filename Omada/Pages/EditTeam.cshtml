@@ -54,32 +54,40 @@
                         </tr>
                         @for (int i = 0; i < Model.TeamMembers.Count(); i++)
                         {
-                            <tr id="@Model.TeamMembers[i].User.UserName">
-                                <td>
-                                    <label>@Model.TeamMembers[i].User.Email</label>
-                                </td>
-                                <td>
-                                    @if (Model.TeamMembers[i].IsLeader == true)
-                                    {
-                                        <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
-                                        <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                                    }
-                                    else
-                                    {
-                                        <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
-                                        <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                                    }
-                                </td>
-                                <td>
-                                    <input type="button" class="btn btn-dark" value="Remove" onclick="removeFromTeam('@Model.TeamMembers[i].User.Email', '@Model.Team.Id')"/>
-                                </td>
-                            </tr>
+                    <tr id="@Model.TeamMembers[i].User.UserName">
+                        <td>
+                            <label>@Model.TeamMembers[i].User.Email</label>
+                        </td>
+                        <td>
+                            @if (Model.TeamMembers[i].IsLeader == true)
+                            {
+                                <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
+                                <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
+                                <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">Remove</button><br />
+                        </td>
+                    </tr>
+                    <tr id="@Model.TeamMembers[i].User.Email removeConfirmation" style="display: none;">
+                        <td>
+                            <label>Are you sure?</label><br />
+                            <button type="button" class="btn btn-dark" onclick="removeFromTeam('@Model.TeamMembers[i].User.Email', '@Model.Team.Id')">Yes</button>
+                            <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">No</button><br/>
+                        </td>
+                    </tr>
                         }
                     </table>
                 </div>
             </div>
         }
     <br /><button type="submit" class="btn btn-dark" name="submitButton" asp-page-handler="Final">Save</button>
+    <a class="btn btn-dark" asp-page="TeamsList">Cancel</a>
 </form>
 
 @section Scripts
@@ -117,17 +125,17 @@
                 Team: team
             })
         }).done(function (result) {
-            
+            document.getElementById("removeConfirmation").style.display = none;
         });
     };
     
-    function buttonClicked(users) {
-        var users = document.getElementById(users);
-        if (users.style.display === "none") {
-            users.style.display = "block";
+    function buttonClicked(item) {
+        var item = document.getElementById(item);
+        if (item.style.display === "none") {
+            item.style.display = "block";
         }
         else {
-            users.style.display = "none";
+            item.style.display = "none";
         }
     };
 </script>

@@ -19,7 +19,7 @@
                     @foreach (var user in Model.Teams_Users.Where(t => t.Key == teamUsers).SelectMany(t => t.Value).ToList())
                     {
                         <tr>
-                            <td>@user.Email</td>
+                            <td style="text-align: left; padding-left: 30%">@user.Email</td>
                         </tr>
                     }
                 </table>

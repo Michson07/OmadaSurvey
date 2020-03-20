@@ -67,59 +67,29 @@
 @section Scripts
 {
 <script>
-    Date.prototype.getWeekNumber = function(){
-        var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate() + 1));
-        var dayNum = d.getUTCDay() || 7;
-        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-        return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
-
-    };        
-    var today = new Date();
-    var weeks = [];
-    for (var i = 1; i <= today.getWeekNumber(); i++) {
-        weeks.push(i);
-    }
-
-    var colors = function() {
-            var r = Math.floor(Math.random() * 255);
-            var g = Math.floor(Math.random() * 255);
-            var b = Math.floor(Math.random() * 255);
-            return "rgb(" + r + "," + g + "," + b + ")";
-    };
-
-    var omadaChart = document.getElementById("chart").getContext("2d");
-    var myDatasets = [];
-
     var dictionary = @Html.Raw(Json.Serialize(Model.AverageWeeks));
-    for (var key in dictionary) {
-        if (dictionary.hasOwnProperty(key)) {
-            var averages = dictionary[key].map(function(v){
-                return {
-                    x: v.week,
-                    y: v.average
+    function addData() {
+        for (var key in dictionary) {
+            if (dictionary.hasOwnProperty(key)) {
+                var averages = dictionary[key].map(function (v) {
+                        return {
+                            x: v.week,
+                            y: v.average
+                    };
+                });
+                var color = colors();
+                var current = {
+                    fill: false,
+                    borderColor: color,
+                    label: key,
+                    data: averages
                 };
-            });
-            var color = colors();
-            var current = {
-                fill: true,
-                borderColor: color,
-                backgroundColor: 'transparent',
-                label: key,
-                data: averages
-            };
-            myDatasets.push(current);
+                myDatasets.push(current);
+            }
         }
     }
 
-    var massPopChart = new Chart(omadaChart, {
-        type: 'line',
-        data: {
-            labels: weeks,
-            datasets: myDatasets
-        },
-        options: {}
-    });
+   window.onload = createChart();
 
     function teamClick(button) {
       var name = button.id;

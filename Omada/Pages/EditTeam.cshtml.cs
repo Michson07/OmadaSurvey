@@ -117,6 +117,11 @@ namespace Omada.Pages
                 Console.WriteLine(ex.Message);
             }
             teamData.RemoveTeamMember(user.Id, team);
+            NotTeamMembers.Add(new NotTeamMember
+            {
+                IsSelected = false,
+                User = user
+            });
         }
 
         public async Task<IActionResult> OnPostFinalAsync ()

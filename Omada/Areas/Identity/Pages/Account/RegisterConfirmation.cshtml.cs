@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Omada.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
-using System.Net;
 using Omada.ManageTeamsAndSurveys;
 
 namespace Omada.Areas.Identity.Pages.Account
@@ -49,7 +47,7 @@ namespace Omada.Areas.Identity.Pages.Account
             EmailConfirmationUrl = Url.Page(
             "/Account/ConfirmEmail",
             pageHandler: null,
-            values: new { area = "Identity", userId = userId, code = code },
+            values: new { area = "Identity", userId, code },
             protocol: Request.Scheme);
 
             Email = email;

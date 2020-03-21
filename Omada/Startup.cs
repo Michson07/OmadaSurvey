@@ -63,6 +63,9 @@ namespace Omada
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
+
+            EmailSender emailSender = new EmailSender();
+            emailSender.InformAboutSurvey();
         }
     }
 }

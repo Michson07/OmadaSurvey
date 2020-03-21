@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Omada.Areas.Identity.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Omada.Pages.ManageUser;
 
 namespace Omada.ManageTeamsAndSurveys
 {
@@ -12,6 +15,7 @@ namespace Omada.ManageTeamsAndSurveys
     {
         string SenderEmail;
         string SenderPassword;
+
         public EmailSender()
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
@@ -19,6 +23,7 @@ namespace Omada.ManageTeamsAndSurveys
             SenderEmail = configurationRoot.GetSection("EmailSender").GetSection("Mail").Value;
             SenderPassword = configurationRoot.GetSection("EmailSender").GetSection("Password").Value;
         }
+
         public bool SendEmail(string receiverMail, string subject, string body)
         {
             using (MailMessage mail = new MailMessage())
@@ -40,8 +45,27 @@ namespace Omada.ManageTeamsAndSurveys
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine("Blad" + ex);
+                    Console.WriteLine("Error: " + ex);
                     return false;
+                }
+            }
+        }
+        public void InformAboutSurvey()
+        {
+            UserDataNoEntity userData = new UserDataNoEntity();
+            var users = userData.GetAllUsers();
+            string subject = "Take a survey this week";
+            DateTime date = DateTime.Now;
+            if (date.DayOfWeek == DayOfWeek.Thursday)
+            {
+                foreach (OmadaUser user in users)
+                {
+                    string body = $"Hello {user.Email}\n" +
+                        $"You can take a survey for this week.";
+                    if(SendEmail(user.Email, subject, body))
+                    {
+                        Console.WriteLine("Email sent");
+                    }
                 }
             }
         }

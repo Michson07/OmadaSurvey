@@ -15,6 +15,7 @@ namespace Omada.ManageTeamsAndSurveys
     {
         string SenderEmail;
         string SenderPassword;
+        public string DomainName { get; }
 
         public EmailSender()
         {
@@ -22,6 +23,7 @@ namespace Omada.ManageTeamsAndSurveys
             IConfigurationRoot configurationRoot = configurationBuilder.Build();
             SenderEmail = configurationRoot.GetSection("EmailSender").GetSection("Mail").Value;
             SenderPassword = configurationRoot.GetSection("EmailSender").GetSection("Password").Value;
+            DomainName = configurationRoot.GetSection("Domain").Value;
         }
 
         public bool SendEmail(string receiverMail, string subject, string body)
@@ -60,11 +62,16 @@ namespace Omada.ManageTeamsAndSurveys
             {
                 foreach (OmadaUser user in users)
                 {
-                    string body = $"Hello {user.Email}\n" +
-                        $"You can take a survey for this week.";
+                    string body = $"Hello {user.Email}<br/>" +
+                        $"You can take a survey for this week<br/>" +
+                        $"<a class='btn btn-dark' href='{DomainName}/StartSurvey'>Start The Survey</a>";
                     if(SendEmail(user.Email, subject, body))
                     {
                         Console.WriteLine("Email sent");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Email to {user.Email} wasn't send");
                     }
                 }
             }

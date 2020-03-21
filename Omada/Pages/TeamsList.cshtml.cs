@@ -69,8 +69,11 @@ namespace Omada.Pages
                 string email = leader.Email;
                 string userId = userManager.GetUserId(HttpContext.User);
                 OmadaUser user = userManager.FindByIdAsync(userId).Result;
-                string subject = "Request to be added to team ";
-                string body = $"{user.UserName} wants to join your team {Team.Name}";
+                string subject = "Request to be added to team";
+                string body = $"Hi {leader.UserName}, <br/>" +
+                    $"{user.UserName} wants to join your team {Team.Name}<br/>" +
+                    $"Click below to make a decision<br/>" +
+                    $"<a href='{emailSender.DomainName}/AddUserToTeam/{user.Id}'>Add User To Team</a>";
                 if(!emailSender.SendEmail(email, subject, body))
                 {
                     return StatusCode((int)HttpStatusCode.InternalServerError, "Error occurred during sending email! Please, try again later");

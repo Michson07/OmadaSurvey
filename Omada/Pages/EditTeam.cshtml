@@ -9,8 +9,8 @@
     <input type="hidden" asp-for="Team.Id" />
     <div class="form-group">
         <label asp-for="Team.Name"></label>
-        <input asp-for="Team.Name" class="form-control" />
-        <span class="text-danger" asp-validation-for="Team.Name"></span>
+        <input asp-for="Team.Name" class="form-control" onchange="checkTeamName(this.value)"/>
+        <span class="text-danger" id="nameValidation" style="display: none"></span>
     </div>
     <div class="form-group">
         <label asp-for="Team.IsPublic">Is Team Public?</label>
@@ -86,7 +86,7 @@
                 </div>
             </div>
         }
-    <br /><button type="submit" class="btn btn-dark" name="submitButton" asp-page-handler="Final">Save</button>
+    <br /><button onclick="teamConfirmationClicked()"type="submit" class="btn btn-dark" name="submitButton" id="submitButton" asp-page-handler="Final">Save</button>
     <a class="btn btn-dark" asp-page="TeamsList">Cancel</a>
 </form>
 
@@ -109,6 +109,30 @@
         }
     };
 
+    var teams = @Html.Raw(Json.Serialize(Model.TeamsNames));
+    var nameSpan = document.getElementById('nameValidation');
+
+    function changeNameSpan(display, text) {
+        nameSpan.style.display = display;
+        nameSpan.innerHTML = text;
+    };
+
+    function checkTeamName(name) {
+        if (teams.includes(name)) {
+            changeNameSpan("block", "Team already exists");
+            document.getElementById("submitButton").setAttribute("disabled", "disabled");
+        }
+        else if (!name)
+        {
+            changeNameSpan("block", "Team name can't be empty");
+            document.getElementById("submitButton").setAttribute("disabled", "disabled");
+        }
+        else {
+            changeNameSpan("none", "");
+            document.getElementById("submitButton").removeAttribute("disabled");
+        }
+    }
+
     function removeFromTeam(nick, team) {
         document.getElementById(nick).style.display = "none";
         $.ajax({
@@ -128,6 +152,11 @@
             document.getElementById("removeConfirmation").style.display = none;
         });
     };
+    function teamConfirmationClicked() {
+        if (nameSpan.style.display === "block") {
+            document.getElementsById("submitButton").disabled = true;
+        }
+    }
     
     function buttonClicked(item) {
         var item = document.getElementById(item);

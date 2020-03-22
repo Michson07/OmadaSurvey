@@ -25,6 +25,7 @@ namespace Omada.Pages
         public OmadaTeam Team { get; set; }
         public List<NotTeamMember> NotTeamMembers { get; set; }
         public List<TeamMember> TeamMembers { get; set; }
+        public List<string> TeamsNames { get; set; }
         public bool TeamExists { get; set; }
         public string membersJson;
         public EditTeamModel(ITeamData teamData, UserManager<OmadaUser> userManager, IUserData userData)
@@ -73,15 +74,19 @@ namespace Omada.Pages
         {
             membersJson = JsonSerializer.Serialize(NotTeamMembers.Select(m => m.User.UserName).ToList());
         }
+        private void GetAllTeams(int? teamId)
+        {
+            TeamsNames = teamData.GetAllTeams().Where(t => t.Id != teamId).Select(t => t.Name).ToList();
+        }
         public IActionResult OnGet(int? teamId)
         {
-            SetUsers(teamId);
-            SerializeMembers();
             if (Team == null)
             {
                 return RedirectToPage("./NotFound");
             }
-
+            SetUsers(teamId);
+            SerializeMembers();
+            GetAllTeams(teamId);
             return Page();
         }
 
@@ -117,11 +122,6 @@ namespace Omada.Pages
                 Console.WriteLine(ex.Message);
             }
             teamData.RemoveTeamMember(user.Id, team);
-            NotTeamMembers.Add(new NotTeamMember
-            {
-                IsSelected = false,
-                User = user
-            });
         }
 
         public async Task<IActionResult> OnPostFinalAsync ()

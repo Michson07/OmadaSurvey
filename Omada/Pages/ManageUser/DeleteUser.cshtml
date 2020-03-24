@@ -4,14 +4,15 @@
     ViewData["Title"] = "DeleteUser";
 }
 
-<h1>DeleteUser</h1>
+<div style="margin: auto; text-align: center">
 
-<div class="alert alert-dark">
-    Are you sure to delete @Model.DeletedUser.UserName ?
+    <div style="padding: 10px;">
+        Are you sure to delete @Model.DeletedUser.UserName ?
+    </div>
+
+    <form method="post">
+        <button type="submit" class="btn btn-dark">Yes!</button>
+        <a asp-page="../UsersList" class="btn btn-dark">Cancel</a>
+    </form>
 </div>
-
-<form method="post">
-    <button type="submit" class="btn btn-dark">Yes!</button>
-    <a asp-page="../UsersList" class="btn btn-dark">Cancel</a>
-</form>
 

@@ -7,14 +7,14 @@
 <h1>Week: @Model.WeekNumber</h1>
 
 <div class="container">
-    <h1>Do you want to start survey?</h1>
+    <h1>Do you want to start the survey?</h1>
     @if (!Model.IsUserAbleToStart)
     {
-        <a class="btn btn-dark" id="disabledButton" asp-area="" asp-page="">You have already taken the survey this week</a><br/><br/>
-        <a asp-page="./SurveyCompleted">See the statistics of teams you are a member</a>
+        <a class="btn btn-dark" id="disabledButton" asp-area="" asp-page="">You have already taken the survey this week.</a><br /><br />
+        <a asp-page="./SurveyCompleted">See the statistics of the teams you are member.</a>
     }
     else
     {
-        <a class="btn btn-dark" asp-area="" asp-page="/Survey">Yes</a>
+        <a class="btn btn-dark" asp-area="" asp-page="/Survey">Start</a>
     }
 </div>

@@ -4,11 +4,13 @@
     ViewData["Title"] = "DeleteTeam";
 }
 
-<div class="ąlert alert-dark">
-    Are you sure to delete @Model.Team.Name ?
-</div>
+<div style="margin: auto; text-align: center">
+    <div style="padding: 10px;">
+        Are you sure to delete @Model.Team.Name ?
+    </div>
 
-<form method="post">
-    <button type="submit" class="btn btn-dark">Yes!</button>
-    <a asp-page="./TeamsList" class="btn btn-dark">Cancel</a>
-</form>
+    <form method="post">
+        <button type="submit" class="btn btn-dark">Yes!</button>
+        <a asp-page="./TeamsList" class="btn btn-dark">Cancel</a>
+    </form>
+</div>

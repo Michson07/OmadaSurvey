@@ -25,7 +25,7 @@
         <span class="text-danger" asp-validation-for="Team.OpinionsVisible"></span>
     </div>
 
-    <div class="newMembers">
+    <div class="newMembers" style="padding-bottom: 20px;">
         <button type="button" class="btn btn-sm" onclick="buttonClicked('addUsers')">Add New Team Members?</button>
         <div id="addUsers" class="form-group" style="display: none;">
             <input type="text" id="search"/>
@@ -39,54 +39,53 @@
                 </div>
             }
         </div>
-            
-        </div>
-        @if (Model.TeamExists)
-        {
-            <div class="modifyMembers">
-                <button type="button" class="btn btn-sm" onclick="buttonClicked('modifyUsers')">Modify Team Members?</button>
-                <div id="modifyUsers" style="display: none">
-                    <table class="table-light" id="members">
-                        <tr>
-                            <th></th>
-                            <th>Is Leader?</th>
-                            <th></th>
-                        </tr>
-                        @for (int i = 0; i < Model.TeamMembers.Count(); i++)
+    </div>
+    @if (Model.TeamExists)
+    {
+        <div class="modifyMembers">
+            <button type="button" class="btn btn-sm" onclick="buttonClicked('modifyUsers')">Modify Team Members?</button>
+            <div id="modifyUsers" style="display: none">
+                <table class="table-light" id="members">
+                    <tr>
+                        <th></th>
+                        <th>Is Leader?</th>
+                        <th></th>
+                    </tr>
+                    @for (int i = 0; i < Model.TeamMembers.Count(); i++)
+                    {
+                <tr id="@Model.TeamMembers[i].User.UserName">
+                    <td>
+                        <label>@Model.TeamMembers[i].User.Email</label>
+                    </td>
+                    <td>
+                        @if (Model.TeamMembers[i].IsLeader == true)
                         {
-                    <tr id="@Model.TeamMembers[i].User.UserName">
-                        <td>
-                            <label>@Model.TeamMembers[i].User.Email</label>
-                        </td>
-                        <td>
-                            @if (Model.TeamMembers[i].IsLeader == true)
-                            {
-                                <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
-                                <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                            }
-                            else
-                            {
-                                <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
-                                <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
-                            }
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">Remove</button><br />
-                        </td>
-                    </tr>
-                    <tr id="@Model.TeamMembers[i].User.Email removeConfirmation" style="display: none;">
-                        <td>
-                            <label>Are you sure?</label><br />
-                            <button type="button" class="btn btn-dark" onclick="removeFromTeam('@Model.TeamMembers[i].User.Email', '@Model.Team.Id')">Yes</button>
-                            <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">No</button><br/>
-                        </td>
-                    </tr>
+                            <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" checked="checked" />
+                            <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
                         }
-                    </table>
-                </div>
+                        else
+                        {
+                            <input type="checkbox" asp-for="@Model.TeamMembers[i].IsLeader" />
+                            <input type="hidden" asp-for="@Model.TeamMembers[i].User.Id" />
+                        }
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">Remove</button><br />
+                    </td>
+                </tr>
+                <tr id="@Model.TeamMembers[i].User.Email removeConfirmation" style="display: none;">
+                    <td>
+                        <label>Are you sure?</label><br />
+                        <button type="button" class="btn btn-dark" onclick="removeFromTeam('@Model.TeamMembers[i].User.Email', '@Model.Team.Id')">Yes</button>
+                        <button type="button" class="btn btn-dark" onclick="buttonClicked('@Model.TeamMembers[i].User.Email removeConfirmation')">No</button><br/>
+                    </td>
+                </tr>
+                    }
+                </table>
             </div>
-        }
-    <br /><button onclick="teamConfirmationClicked()"type="submit" class="btn btn-dark" name="submitButton" id="submitButton" asp-page-handler="Final">Save</button>
+        </div>
+    }
+    <br /><button type="submit" class="btn btn-dark" name="submitButton" id="submitButton" asp-page-handler="Final">Save</button>
     <a class="btn btn-dark" asp-page="TeamsList">Cancel</a>
 </form>
 
@@ -115,21 +114,25 @@
     function changeNameSpan(display, text) {
         nameSpan.style.display = display;
         nameSpan.innerHTML = text;
+        if (display === "block") {
+            document.getElementById("submitButton").setAttribute("disabled", "disabled");
+            document.getElementById("submitButton").style.backgroundColor = "#0178A2";
+        }
+        else {
+            document.getElementById("submitButton").removeAttribute("disabled");
+        }
     };
 
     function checkTeamName(name) {
         if (teams.includes(name)) {
             changeNameSpan("block", "Team already exists");
-            document.getElementById("submitButton").setAttribute("disabled", "disabled");
         }
         else if (!name)
         {
             changeNameSpan("block", "Team name can't be empty");
-            document.getElementById("submitButton").setAttribute("disabled", "disabled");
         }
         else {
-            changeNameSpan("none", "");
-            document.getElementById("submitButton").removeAttribute("disabled");
+            changeNameSpan("none", ""); 
         }
     }
 
@@ -152,11 +155,6 @@
             document.getElementById("removeConfirmation").style.display = none;
         });
     };
-    function teamConfirmationClicked() {
-        if (nameSpan.style.display === "block") {
-            document.getElementsById("submitButton").disabled = true;
-        }
-    }
     
     function buttonClicked(item) {
         var item = document.getElementById(item);
